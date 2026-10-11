@@ -90,6 +90,8 @@ jobs:
             old=$(grep "^${key}=" .env | cut -d= -f2-)
             sed -i "s|${old}|$(openssl rand -hex 24)|g" .env
           done
+          # data/ is gitignored; create it for the worker's uid so the seed can download into it.
+          mkdir -p data && sudo chown 10001:10001 data
       - name: Start the stack
         run: docker compose -f infra/docker-compose.yml up -d --build --wait
       - name: Seed Online Retail II
