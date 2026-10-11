@@ -54,7 +54,7 @@ jobs:
         working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 12.6.0
       - uses: actions/setup-node@v4
@@ -96,7 +96,7 @@ jobs:
         run: |
           docker compose -f infra/docker-compose.yml exec -T db sh -c \
             "psql -U postgres -d retention -c \"insert into ops.users (email, role) values ('admin@example.com','admin'), ('viewer@example.com','viewer') on conflict do nothing\""
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 12.6.0
       - uses: actions/setup-node@v4
