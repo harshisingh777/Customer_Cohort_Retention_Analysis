@@ -3,7 +3,7 @@
 !.env.example
 
 # local data files: never committed
-data/
+/data/
 *.db
 *.duckdb
 *.parquet
