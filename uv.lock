@@ -2213,7 +2213,7 @@ api = [
     { name = "pyjwt", specifier = ">=2.10" },
     { name = "sentry-sdk", extras = ["fastapi"], specifier = ">=2.20" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.36" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0" },
 ]
 dev = [
     { name = "httpx", specifier = ">=0.27" },
