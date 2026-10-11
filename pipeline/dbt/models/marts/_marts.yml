@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: mart_cohort_retention_monthly
+    description: >
+      Additive cohort cells (cohort_month x channel x country x first_category x period), observable
+      periods only. A missing row means "not observable yet"; a 0 row means "observed, nobody bought".
+    columns:
+      - name: cohort_month
+        tests: [not_null]
+      - name: period_number
+        tests: [not_null]
+
+  - name: mart_cohort_retention_weekly
+    description: Weekly twin of mart_cohort_retention_monthly (ISO weeks, Monday start).
+
+  - name: mart_cohort_revenue_monthly
+  - name: mart_cohort_revenue_weekly
+  - name: mart_second_order
+    columns:
+      - name: customer_key
+        tests: [unique, not_null]
+  - name: mart_second_order_days
+  - name: mart_first_product_repeat
+  - name: mart_customer_state
+    columns:
+      - name: customer_key
+        tests: [unique, not_null]
+      - name: rfm_segment
+        tests:
+          - accepted_values:
+              arguments:
+                # Pre-quoted (quote: false) because "Can't lose them" contains an apostrophe.
+                quote: false
+                values: ["'Champions'", "'Loyal'", "'Potential loyalists'", "'New customers'", "'Needs attention'", "'Can''t lose them'", "'At risk'", "'Lost'"]
+  - name: mart_rfm_cells
+  - name: mart_ltv_cohort
+  - name: mart_lapse_monthly
+  - name: mart_customer_clv
+    columns:
+      - name: customer_key
+        tests: [unique]
+  - name: mart_clv_model
+  - name: mart_channel_month
+  - name: mart_channel_spend_monthly
+  - name: mart_reconciliation
+    columns:
+      - name: day
+        tests: [unique, not_null]
+  - name: mart_data_quality

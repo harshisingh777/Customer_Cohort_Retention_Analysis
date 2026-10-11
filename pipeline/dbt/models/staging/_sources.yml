@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Written only by ingest adapters (pipeline/ingest). Full source payloads, idempotent upserts.
+    tables:
+      - name: customers
+      - name: orders
+      - name: order_items
+      - name: refunds
+      - name: marketing_spend
+      - name: fx_rates
+      - name: clv_runs
+        description: One row per weekly CLV fit (pipeline/clv).
+      - name: clv_predictions
+      - name: clv_holdout
+      - name: clv_group_draws

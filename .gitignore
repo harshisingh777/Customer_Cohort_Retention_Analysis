@@ -1,0 +1,41 @@
+# secrets
+.env*
+!.env.example
+
+# local data files: never committed
+data/
+*.db
+*.duckdb
+*.parquet
+*.xlsx
+*.zip
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+
+# dbt
+pipeline/dbt/target/
+pipeline/dbt/dbt_packages/
+pipeline/dbt/logs/
+logs/
+
+# node
+node_modules/
+apps/web/.next/
+apps/web/out/
+apps/web/next-env.d.ts
+apps/web/playwright-report/
+apps/web/test-results/
+*.tsbuildinfo
+
+# editors
+.vscode/
+.idea/
+.DS_Store
+
+apps/web/playwright/.auth/

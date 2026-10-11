@@ -1,0 +1,19 @@
+import { HydrationBoundary } from "@tanstack/react-query";
+import type { SearchParams } from "nuqs/server";
+import { ChannelsView } from "@/components/views/channels-view";
+import { channelQuery } from "@/lib/queries";
+import { loadChannels } from "@/lib/search-params";
+import { getMeta } from "@/lib/server/api";
+import { prefetch } from "@/lib/server/prefetch";
+
+export const metadata = { title: "Channels" };
+
+export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const [f, meta] = await Promise.all([loadChannels(searchParams), getMeta()]);
+  const state = await prefetch(meta.data_version, [{ path: "/v1/channels", query: channelQuery(f) }]);
+  return (
+    <HydrationBoundary state={state}>
+      <ChannelsView />
+    </HydrationBoundary>
+  );
+}

@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Tailwind reads the tokens; nothing else defines a colour. */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-rule: var(--rule);
+  --color-ground: var(--ground);
+  --color-sheet: var(--sheet);
+  --color-highlighter: var(--highlighter);
+  --color-signal: var(--signal);
+  --color-ramp-1: var(--ramp-1);
+  --color-ramp-2: var(--ramp-2);
+  --color-ramp-3: var(--ramp-3);
+  --color-ramp-4: var(--ramp-4);
+  --color-ramp-5: var(--ramp-5);
+  --color-ramp-6: var(--ramp-6);
+  --color-ramp-7: var(--ramp-7);
+  --font-ui: var(--font-ui);
+  --font-text: var(--font-text);
+  --radius-sheet: var(--radius-sheet);
+  --radius-control: var(--radius-control);
+  --shadow-pop: var(--shadow-pop);
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 26px;
+  --text-2xl: 34px;
+}
+
+html {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* Every number uses tabular figures. */
+table,
+.num,
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Selection is always the highlighter, everywhere. */
+.highlight {
+  background: linear-gradient(
+    transparent 12%,
+    var(--highlighter) 12%,
+    var(--highlighter) 88%,
+    transparent 88%
+  );
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.serif {
+  font-family: var(--font-text);
+  font-optical-sizing: auto;
+}
+
+/* Filter clauses and Terms are underlined text, not pills. */
+.clause {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--graphite);
+  cursor: pointer;
+}
+.clause:hover {
+  text-decoration-color: var(--ink);
+}
+.term {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--graphite);
+  cursor: help;
+}
+
+.fade-in {
+  animation: fade var(--dur-quick) var(--ease);
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.measure {
+  max-width: 70ch;
+}
+
+/* Print route: A4 with the screen components, no chrome. */
+@media print {
+  html {
+    background: white;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .sheet {
+    break-inside: avoid;
+    border: 1px solid var(--rule);
+  }
+}

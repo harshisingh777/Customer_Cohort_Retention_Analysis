@@ -1,0 +1,2 @@
+pipeline/dbt/target/
+pipeline/dbt/dbt_packages/
