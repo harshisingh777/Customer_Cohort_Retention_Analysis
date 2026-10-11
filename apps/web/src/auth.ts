@@ -86,5 +86,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 export const providerFlags = {
   google: env.googleEnabled,
   dev: env.devLogin,
+  demo: env.demo && env.devLogin,
   emailServer: Boolean(env.emailServer),
 };

@@ -1,0 +1,45 @@
+# Presentation deployment on Render's free plan (docs/demo.md). Not for production: see render.yaml.
+# Free web services sleep after 15 idle minutes and take about a minute to wake.
+# Postgres is Neon (free, set up by the demo-db workflow); no worker runs, so data is loaded once.
+envVarGroups:
+  - name: retention-demo
+    envVars:
+      - { key: APP_ENV, value: demo }
+      - { key: API_JWT_SECRET, generateValue: true }
+
+services:
+  - type: web
+    name: retention-demo-api
+    runtime: docker
+    plan: free
+    dockerfilePath: infra/docker/api.Dockerfile
+    dockerContext: .
+    healthCheckPath: /readyz
+    autoDeploy: true
+    envVars:
+      - fromGroup: retention-demo
+      - { key: EXPORT_SIGNING_KEY, generateValue: true }
+      # Neon URLs for roles api_ro and api_ops: docs/demo.md lists the exact values.
+      - { key: API_DATABASE_URL, sync: false }
+      - { key: API_OPS_DATABASE_URL, sync: false }
+      # The web service's URL, e.g. https://retention-demo-web.onrender.com
+      - { key: CORS_ALLOWED_ORIGINS, sync: false }
+
+  - type: web
+    name: retention-demo-web
+    runtime: docker
+    plan: free
+    dockerfilePath: apps/web/Dockerfile
+    dockerContext: apps/web
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - fromGroup: retention-demo
+      - { key: AUTH_SECRET, generateValue: true }
+      - { key: AUTH_TRUST_HOST, value: "true" }
+      - { key: AUTH_DEV_LOGIN, value: "1" }
+      # Neon URL for role web_auth.
+      - { key: WEB_DATABASE_URL, sync: false }
+      # The API service's URL, e.g. https://retention-demo-api.onrender.com (both values the same).
+      - { key: API_BASE_URL, sync: false }
+      - { key: PUBLIC_API_URL, sync: false }

@@ -1,6 +1,7 @@
 """Environment configuration. Every environment-specific value comes from here."""
 
 from functools import lru_cache
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -59,6 +60,9 @@ def get_env() -> Env:
     return Env()
 
 
+_LIBPQ_ONLY = {"channel_binding"}
+
+
 def to_psycopg_url(url: str) -> str:
     """Normalise a SQLAlchemy-style URL to a libpq one."""
     return url.replace("postgresql+asyncpg://", "postgresql://").replace(
@@ -66,5 +70,17 @@ def to_psycopg_url(url: str) -> str:
     )
 
 
+def to_asyncpg_dsn(url: str) -> str:
+    """A libpq URL asyncpg accepts. asyncpg sends unknown query parameters as server settings,
+    so libpq-only ones that hosted Postgres URLs carry (Neon: channel_binding) are dropped."""
+    parts = urlsplit(to_psycopg_url(url))
+    query = [(k, v) for k, v in parse_qsl(parts.query) if k not in _LIBPQ_ONLY]
+    return urlunsplit(parts._replace(query=urlencode(query)))
+
+
 def to_asyncpg_url(url: str) -> str:
-    return to_psycopg_url(url).replace("postgresql://", "postgresql+asyncpg://", 1)
+    """SQLAlchemy's asyncpg dialect passes query parameters to asyncpg.connect, which takes
+    ssl= rather than libpq's sslmode=."""
+    parts = urlsplit(to_asyncpg_dsn(url))
+    query = [("ssl" if k == "sslmode" else k, v) for k, v in parse_qsl(parts.query)]
+    return urlunsplit(parts._replace(scheme="postgresql+asyncpg", query=urlencode(query)))

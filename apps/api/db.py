@@ -18,7 +18,7 @@ import asyncpg
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
-from core.config import get_env, to_asyncpg_url, to_psycopg_url
+from core.config import get_env, to_asyncpg_dsn, to_asyncpg_url
 
 log = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class Database:
 
     async def _listen(self) -> None:
         try:
-            listener = await asyncpg.connect(to_psycopg_url(get_env().api_database_url))
+            listener = await asyncpg.connect(to_asyncpg_dsn(get_env().api_database_url))
             await listener.add_listener("data_published", self._notified)
             self._listener = listener
         except Exception as e:  # The poll keeps things correct if LISTEN is unavailable.

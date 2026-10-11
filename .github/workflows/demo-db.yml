@@ -1,0 +1,57 @@
+name: demo-db
+
+# Loads the presentation database (docs/demo.md). Run from the Actions tab.
+# dry_run builds into a throwaway Postgres instead, to check the setup and the data size.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Use a throwaway Postgres instead of the demo database
+        type: boolean
+        default: false
+      skip_clv:
+        description: Skip the CLV model fit (P(alive) and 12-month value columns stay empty)
+        type: boolean
+        default: false
+
+concurrency:
+  group: demo-db
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: neondb
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12 --no-default-groups --group pipeline
+      - name: Load
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          DEMO_ADMIN_DATABASE_URL: ${{ secrets.DEMO_ADMIN_DATABASE_URL }}
+          DEMO_ROLE_PASSWORD: ${{ secrets.DEMO_ROLE_PASSWORD }}
+          PII_KEY: ${{ secrets.DEMO_PII_KEY }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            export DEMO_ADMIN_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neondb
+            export DEMO_ROLE_PASSWORD=$(openssl rand -hex 16) PII_KEY=$(openssl rand -hex 16)
+          elif [ -z "$DEMO_ADMIN_DATABASE_URL" ] || [ -z "$DEMO_ROLE_PASSWORD" ] || [ -z "$PII_KEY" ]; then
+            echo "::error::Set the DEMO_ADMIN_DATABASE_URL, DEMO_ROLE_PASSWORD and DEMO_PII_KEY secrets (docs/demo.md)"
+            exit 1
+          fi
+          uv run --no-sync python scripts/demo_db.py ${{ inputs.skip_clv && '--skip-clv' || '' }}

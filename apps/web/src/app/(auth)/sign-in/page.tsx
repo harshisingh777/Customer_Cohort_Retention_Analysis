@@ -70,15 +70,34 @@ export default async function SignIn({
         </p>
       ) : null}
       <div className="mt-8 flex flex-col gap-6 rounded-[var(--radius-sheet)] bg-sheet p-6">
-        <form action={emailSignIn} className="flex flex-col gap-3">
-          <label htmlFor="email" className="text-graphite">
-            Work email
-          </label>
-          <input id="email" name="email" type="email" required autoComplete="email" className={input} />
-          <button type="submit" className={primary}>
-            Email me a sign-in link
-          </button>
-        </form>
+        {providerFlags.demo ? (
+          <form action={devSignIn} className="flex flex-col gap-3">
+            <label htmlFor="dev-email" className="text-graphite">
+              Demo account
+            </label>
+            <input
+              id="dev-email"
+              name="email"
+              type="email"
+              required
+              defaultValue="admin@example.com"
+              className={input}
+            />
+            <button type="submit" className={primary}>
+              Sign in to the demo
+            </button>
+          </form>
+        ) : (
+          <form action={emailSignIn} className="flex flex-col gap-3">
+            <label htmlFor="email" className="text-graphite">
+              Work email
+            </label>
+            <input id="email" name="email" type="email" required autoComplete="email" className={input} />
+            <button type="submit" className={primary}>
+              Email me a sign-in link
+            </button>
+          </form>
+        )}
         {providerFlags.google ? (
           <form action={googleSignIn}>
             <button type="submit" className={secondary}>
@@ -86,7 +105,7 @@ export default async function SignIn({
             </button>
           </form>
         ) : null}
-        {providerFlags.dev ? (
+        {providerFlags.dev && !providerFlags.demo ? (
           <form action={devSignIn} className="flex flex-col gap-3 border-rule border-t pt-6">
             <label htmlFor="dev-email" className="text-graphite">
               Development sign-in (local and CI only)
