@@ -29,3 +29,31 @@ def test_plain_local_urls_are_unchanged():
     assert to_asyncpg_url("postgresql+psycopg://u:p@db/retention") == (
         "postgresql+asyncpg://u:p@db/retention"
     )
+
+
+def test_pasted_database_urls_are_cleaned(monkeypatch):
+    from core.config import Env
+
+    url = "postgresql://api_ro:pw@ep-x.aws.neon.tech/neondb?sslmode=require"
+    for pasted in (
+        url,
+        f"  {url}\n",
+        f"'{url}'",
+        f"psql '{url}'",
+        f"API_DATABASE_URL={url}",
+        f'API_DATABASE_URL="{url}"',
+        url.replace("postgresql://", "postgres://"),
+    ):
+        monkeypatch.setenv("API_DATABASE_URL", pasted)
+        assert Env(_env_file=None).api_database_url == url, pasted  # pyright: ignore[reportCallIssue]
+
+
+def test_cors_origins_tolerate_pasted_values(monkeypatch):
+    from core.config import Env
+
+    monkeypatch.setenv(
+        "CORS_ALLOWED_ORIGINS",
+        "CORS_ALLOWED_ORIGINS=https://a.onrender.com/, http://localhost:3000",
+    )
+    env = Env(_env_file=None)  # pyright: ignore[reportCallIssue]
+    assert env.cors_origins == ["https://a.onrender.com", "http://localhost:3000"]

@@ -33,6 +33,11 @@ class DataVersion:
 class Database:
     def __init__(self) -> None:
         env = get_env()
+        if not env.api_database_url.startswith(("postgresql://", "postgres://", "postgresql+")):
+            raise RuntimeError(
+                "API_DATABASE_URL must be a postgresql:// connection string"
+                + (" (it is empty)" if not env.api_database_url else "")
+            )
         self.ro: AsyncEngine = create_async_engine(
             to_asyncpg_url(env.api_database_url),
             pool_size=5,

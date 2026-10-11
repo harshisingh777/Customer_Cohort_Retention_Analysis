@@ -1,9 +1,10 @@
 """Environment configuration. Every environment-specific value comes from here."""
 
+import re
 from functools import lru_cache
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,6 +18,17 @@ class Env(BaseSettings):
     pipeline_database_url: str = ""
     api_database_url: str = ""
     api_ops_database_url: str = ""
+
+    @field_validator(
+        "migrator_database_url",
+        "pipeline_database_url",
+        "api_database_url",
+        "api_ops_database_url",
+        mode="before",
+    )
+    @classmethod
+    def _clean_database_url(cls, value: object) -> object:
+        return clean_database_url(value) if isinstance(value, str) else value
 
     pii_key: str = ""
     api_jwt_secret: str = ""
@@ -48,7 +60,9 @@ class Env(BaseSettings):
 
     @property
     def cors_origins(self) -> list[str]:
-        return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
+        # Browsers send origins without a trailing slash; pasted dashboard values often have one.
+        origins = clean_database_url(self.cors_allowed_origins).split(",")
+        return [o.strip().strip("'\"").rstrip("/") for o in origins if o.strip()]
 
     @property
     def is_production(self) -> bool:
@@ -61,6 +75,17 @@ def get_env() -> Env:
 
 
 _LIBPQ_ONLY = {"channel_binding"}
+_PASTED_PREFIX = re.compile(r"^(?:psql\s+|[A-Z][A-Z0-9_]*=)")
+
+
+def clean_database_url(value: str) -> str:
+    """Undo common copy-paste wrapping of a connection string in a dashboard: surrounding
+    whitespace and quotes, Neon's `psql '...'` form, or a whole `NAME=value` line."""
+    value = value.strip()
+    while (prefix := _PASTED_PREFIX.match(value)) is not None:
+        value = value[prefix.end() :].strip()
+    value = value.strip("'\"").strip()
+    return "postgresql://" + value[11:] if value.startswith("postgres://") else value
 
 
 def to_psycopg_url(url: str) -> str:

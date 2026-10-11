@@ -62,6 +62,8 @@ everything.
      uv run python scripts/demo_db.py --print-env
    ```
 
+   Each printed line is `NAME=value`: paste only the part after the first `=`.
+
    | Service | Variable | Value |
    |---|---|---|
    | `retention-demo-api` | `API_DATABASE_URL` | the `api_ro` URL |
