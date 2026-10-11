@@ -119,7 +119,7 @@ jobs:
             --header "Authorization: Bearer ${TOKEN}" --include-method GET \
             --checks not_a_server_error --max-examples 25
       - if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: apps/web/playwright-report
