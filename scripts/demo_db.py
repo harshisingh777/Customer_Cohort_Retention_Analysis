@@ -36,6 +36,17 @@ ROLES = {
 DEMO_USERS = [("admin@example.com", "admin"), ("viewer@example.com", "viewer")]
 
 
+def direct_url(url: str) -> str:
+    """Neon's direct endpoint for a pooled URL. The pooler rejects the PII key session setting
+    (PGOPTIONS) and LISTEN, so the pipeline and the API connect directly."""
+    u = urlsplit(url)
+    creds, _, host = u.netloc.rpartition("@")
+    first, dot, rest = host.partition(".")
+    if first.endswith("-pooler"):
+        host = first.removesuffix("-pooler") + dot + rest
+    return urlunsplit(u._replace(netloc=f"{creds}@{host}" if creds else host))
+
+
 def role_url(admin_url: str, role: str, password: str) -> str:
     u = urlsplit(admin_url)
     host = u.netloc.split("@", 1)[-1]
@@ -62,7 +73,7 @@ def main() -> int:
     ap.add_argument("--print-env", action="store_true", help="print the app's database URLs")
     args = ap.parse_args()
 
-    admin_url = os.environ["DEMO_ADMIN_DATABASE_URL"]
+    admin_url = direct_url(os.environ["DEMO_ADMIN_DATABASE_URL"].strip())
     password = os.environ["DEMO_ROLE_PASSWORD"]
     dbname = urlsplit(admin_url).path.lstrip("/")
     if not admin_url.startswith(("postgresql://", "postgres://")) or "<" in admin_url + password:
