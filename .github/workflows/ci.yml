@@ -30,7 +30,7 @@ jobs:
       EXPORT_SIGNING_KEY: ci-export-key
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --frozen --python 3.12
@@ -110,7 +110,7 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm exec playwright install --with-deps chromium
           pnpm exec playwright test
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - name: Schemathesis (property-based fuzzing of every GET route)
         run: |
           set -a; . ./.env; set +a
