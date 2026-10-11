@@ -1,0 +1,28 @@
+[sqlfluff]
+dialect = postgres
+templater = jinja
+max_line_length = 130
+# Column-alias alignment and our own layout conventions are deliberate.
+# AL03: later branches of a union take their names from the first.
+# USING joins and implicit table aliases follow the spec's SQL style (§5.4).
+exclude_rules = LT01, LT02, LT05, LT08, LT09, LT14, AM04, ST06, ST09, RF04, CV11, AL09, CP02, ST05, AM06, CV03, ST07, AM05, AL03
+large_file_skip_byte_limit = 0
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = True
+load_macros_from_path = pipeline/dbt/macros
+
+[sqlfluff:templater:jinja:context]
+target = {"schema": "analytics_build"}
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions]
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:aliasing.table]
+aliasing = implicit
+
+[sqlfluff:rules:aliasing.column]
+aliasing = explicit

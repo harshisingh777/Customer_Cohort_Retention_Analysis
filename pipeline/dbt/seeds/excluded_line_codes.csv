@@ -1,0 +1,18 @@
+source,match_type,code,reason
+*,exact,SHIP,shipping
+*,exact,FREIGHT,freight
+online_retail_ii,exact,POST,postage
+online_retail_ii,exact,DOT,postage
+online_retail_ii,exact,C2,carriage
+online_retail_ii,exact,M,manual adjustment
+online_retail_ii,exact,m,manual adjustment
+online_retail_ii,exact,BANK CHARGES,bank charges
+online_retail_ii,exact,AMAZONFEE,marketplace fee
+online_retail_ii,exact,D,discount line
+online_retail_ii,exact,S,samples
+online_retail_ii,exact,B,bad debt adjustment
+online_retail_ii,exact,CRUK,charity commission
+online_retail_ii,exact,PADS,pads to match
+online_retail_ii,prefix,ADJUST,adjustment
+online_retail_ii,prefix,TEST,test line
+online_retail_ii,prefix,gift_0001,gift voucher

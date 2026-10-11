@@ -1,0 +1,4805 @@
+{
+  "components": {
+    "schemas": {
+      "ChannelRow": {
+        "properties": {
+          "cac": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cac"
+          },
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "ltv_365": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ltv 365"
+          },
+          "ltv_365_eligible": {
+            "title": "Ltv 365 Eligible",
+            "type": "integer"
+          },
+          "ltv_basis": {
+            "anyOf": [
+              {
+                "enum": [
+                  "historical",
+                  "predicted"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ltv Basis"
+          },
+          "ltv_cac": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ltv Cac"
+          },
+          "new_customers": {
+            "title": "New Customers",
+            "type": "integer"
+          },
+          "payback_month": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payback Month"
+          },
+          "pred_ltv_p10": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P10"
+          },
+          "pred_ltv_p50": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P50"
+          },
+          "pred_ltv_p90": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P90"
+          },
+          "spend": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spend"
+          }
+        },
+        "required": [
+          "channel",
+          "new_customers",
+          "spend",
+          "cac",
+          "ltv_365",
+          "ltv_365_eligible",
+          "ltv_basis",
+          "pred_ltv_p10",
+          "pred_ltv_p50",
+          "pred_ltv_p90",
+          "ltv_cac",
+          "payback_month"
+        ],
+        "title": "ChannelRow",
+        "type": "object"
+      },
+      "Channels": {
+        "properties": {
+          "clv_hidden_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clv Hidden Reason"
+          },
+          "clv_visible": {
+            "title": "Clv Visible",
+            "type": "boolean"
+          },
+          "coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "gross_margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gross Margin"
+          },
+          "has_spend": {
+            "title": "Has Spend",
+            "type": "boolean"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ChannelRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "required": [
+          "coverage",
+          "has_spend",
+          "gross_margin",
+          "clv_visible",
+          "clv_hidden_reason",
+          "rows"
+        ],
+        "title": "Channels",
+        "type": "object"
+      },
+      "CohortRow": {
+        "properties": {
+          "active": {
+            "items": {
+              "type": "number"
+            },
+            "title": "Active",
+            "type": "array"
+          },
+          "cohort": {
+            "title": "Cohort",
+            "type": "string"
+          },
+          "high": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "High",
+            "type": "array"
+          },
+          "low": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Low",
+            "type": "array"
+          },
+          "rate": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Rate",
+            "type": "array"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cohort",
+          "size",
+          "active",
+          "rate",
+          "low",
+          "high"
+        ],
+        "title": "CohortRow",
+        "type": "object"
+      },
+      "CohortTable": {
+        "properties": {
+          "cohorts": {
+            "items": {
+              "$ref": "#/components/schemas/CohortRow"
+            },
+            "title": "Cohorts",
+            "type": "array"
+          },
+          "findings": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "granularity": {
+            "enum": [
+              "month",
+              "week"
+            ],
+            "title": "Granularity",
+            "type": "string"
+          },
+          "measure": {
+            "enum": [
+              "customers",
+              "revenue",
+              "cumulative"
+            ],
+            "title": "Measure",
+            "type": "string"
+          },
+          "periods": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Periods",
+            "type": "array"
+          }
+        },
+        "required": [
+          "granularity",
+          "measure",
+          "periods",
+          "cohorts"
+        ],
+        "title": "CohortTable",
+        "type": "object"
+      },
+      "Coverage": {
+        "properties": {
+          "attributed": {
+            "title": "Attributed",
+            "type": "integer"
+          },
+          "new_customers": {
+            "title": "New Customers",
+            "type": "integer"
+          },
+          "share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share"
+          }
+        },
+        "required": [
+          "new_customers",
+          "attributed",
+          "share"
+        ],
+        "title": "Coverage",
+        "type": "object"
+      },
+      "CurveSeries": {
+        "properties": {
+          "cohort": {
+            "title": "Cohort",
+            "type": "string"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          },
+          "values": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Values",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cohort",
+          "size",
+          "values"
+        ],
+        "title": "CurveSeries",
+        "type": "object"
+      },
+      "Curves": {
+        "properties": {
+          "granularity": {
+            "enum": [
+              "month",
+              "week"
+            ],
+            "title": "Granularity",
+            "type": "string"
+          },
+          "measure": {
+            "enum": [
+              "customers",
+              "revenue",
+              "cumulative"
+            ],
+            "title": "Measure",
+            "type": "string"
+          },
+          "median": {
+            "description": "Median of the last six cohorts at each period",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Median",
+            "type": "array"
+          },
+          "median_of": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Median Of",
+            "type": "array"
+          },
+          "periods": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Periods",
+            "type": "array"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/CurveSeries"
+            },
+            "title": "Series",
+            "type": "array"
+          }
+        },
+        "required": [
+          "granularity",
+          "measure",
+          "periods",
+          "series",
+          "median",
+          "median_of"
+        ],
+        "title": "Curves",
+        "type": "object"
+      },
+      "CustomerDetail": {
+        "properties": {
+          "avg_order_value": {
+            "title": "Avg Order Value",
+            "type": "number"
+          },
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "cohort": {
+            "title": "Cohort",
+            "type": "string"
+          },
+          "country": {
+            "title": "Country",
+            "type": "string"
+          },
+          "customer_key": {
+            "title": "Customer Key",
+            "type": "string"
+          },
+          "days_since_last": {
+            "title": "Days Since Last",
+            "type": "integer"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "f": {
+            "title": "F",
+            "type": "integer"
+          },
+          "first_category": {
+            "title": "First Category",
+            "type": "string"
+          },
+          "first_order_date": {
+            "format": "date",
+            "title": "First Order Date",
+            "type": "string"
+          },
+          "first_product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Product"
+          },
+          "is_drifting": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Drifting"
+          },
+          "is_lapsed": {
+            "title": "Is Lapsed",
+            "type": "boolean"
+          },
+          "last_order_date": {
+            "format": "date",
+            "title": "Last Order Date",
+            "type": "string"
+          },
+          "ltv_180d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ltv 180D"
+          },
+          "ltv_365d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ltv 365D"
+          },
+          "ltv_90d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ltv 90D"
+          },
+          "m": {
+            "title": "M",
+            "type": "integer"
+          },
+          "net_revenue": {
+            "title": "Net Revenue",
+            "type": "number"
+          },
+          "orders": {
+            "title": "Orders",
+            "type": "integer"
+          },
+          "orders_timeline": {
+            "items": {
+              "$ref": "#/components/schemas/CustomerOrder"
+            },
+            "title": "Orders Timeline",
+            "type": "array"
+          },
+          "p_alive": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P Alive"
+          },
+          "pred_ltv_p10": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P10"
+          },
+          "pred_ltv_p50": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P50"
+          },
+          "pred_ltv_p90": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P90"
+          },
+          "r": {
+            "title": "R",
+            "type": "integer"
+          },
+          "segment": {
+            "title": "Segment",
+            "type": "string"
+          }
+        },
+        "required": [
+          "customer_key",
+          "email",
+          "cohort",
+          "channel",
+          "country",
+          "first_category",
+          "orders",
+          "net_revenue",
+          "last_order_date",
+          "days_since_last",
+          "is_lapsed",
+          "is_drifting",
+          "segment",
+          "r",
+          "f",
+          "m",
+          "p_alive",
+          "pred_ltv_p10",
+          "pred_ltv_p50",
+          "pred_ltv_p90",
+          "first_order_date",
+          "avg_order_value",
+          "ltv_90d",
+          "ltv_180d",
+          "ltv_365d",
+          "first_product",
+          "orders_timeline"
+        ],
+        "title": "CustomerDetail",
+        "type": "object"
+      },
+      "CustomerOrder": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "net_revenue": {
+            "title": "Net Revenue",
+            "type": "number"
+          },
+          "order_id": {
+            "title": "Order Id",
+            "type": "string"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          }
+        },
+        "required": [
+          "order_id",
+          "date",
+          "net_revenue",
+          "category",
+          "product"
+        ],
+        "title": "CustomerOrder",
+        "type": "object"
+      },
+      "CustomerPage": {
+        "properties": {
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/CustomerRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rows",
+          "next_cursor",
+          "total"
+        ],
+        "title": "CustomerPage",
+        "type": "object"
+      },
+      "CustomerRow": {
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "cohort": {
+            "title": "Cohort",
+            "type": "string"
+          },
+          "country": {
+            "title": "Country",
+            "type": "string"
+          },
+          "customer_key": {
+            "title": "Customer Key",
+            "type": "string"
+          },
+          "days_since_last": {
+            "title": "Days Since Last",
+            "type": "integer"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "f": {
+            "title": "F",
+            "type": "integer"
+          },
+          "first_category": {
+            "title": "First Category",
+            "type": "string"
+          },
+          "is_drifting": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Drifting"
+          },
+          "is_lapsed": {
+            "title": "Is Lapsed",
+            "type": "boolean"
+          },
+          "last_order_date": {
+            "format": "date",
+            "title": "Last Order Date",
+            "type": "string"
+          },
+          "m": {
+            "title": "M",
+            "type": "integer"
+          },
+          "net_revenue": {
+            "title": "Net Revenue",
+            "type": "number"
+          },
+          "orders": {
+            "title": "Orders",
+            "type": "integer"
+          },
+          "p_alive": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P Alive"
+          },
+          "pred_ltv_p10": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P10"
+          },
+          "pred_ltv_p50": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P50"
+          },
+          "pred_ltv_p90": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pred Ltv P90"
+          },
+          "r": {
+            "title": "R",
+            "type": "integer"
+          },
+          "segment": {
+            "title": "Segment",
+            "type": "string"
+          }
+        },
+        "required": [
+          "customer_key",
+          "email",
+          "cohort",
+          "channel",
+          "country",
+          "first_category",
+          "orders",
+          "net_revenue",
+          "last_order_date",
+          "days_since_last",
+          "is_lapsed",
+          "is_drifting",
+          "segment",
+          "r",
+          "f",
+          "m",
+          "p_alive",
+          "pred_ltv_p10",
+          "pred_ltv_p50",
+          "pred_ltv_p90"
+        ],
+        "title": "CustomerRow",
+        "type": "object"
+      },
+      "DataHealth": {
+        "properties": {
+          "clv": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clv"
+          },
+          "data_through": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Through"
+          },
+          "data_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Version"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/Freshness"
+          },
+          "ingest": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Ingest",
+            "type": "array"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "quality": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality"
+          },
+          "reconciliation": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reconciliation"
+          },
+          "reconciliation_daily": {
+            "items": {
+              "$ref": "#/components/schemas/ReconDay"
+            },
+            "title": "Reconciliation Daily",
+            "type": "array"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "title": "Runs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "freshness",
+          "data_version",
+          "data_through",
+          "published_at",
+          "runs",
+          "reconciliation_daily",
+          "reconciliation",
+          "quality",
+          "ingest",
+          "clv"
+        ],
+        "title": "DataHealth",
+        "type": "object"
+      },
+      "DateBounds": {
+        "properties": {
+          "max_month": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Month"
+          },
+          "max_week": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Week"
+          },
+          "min_month": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Month"
+          },
+          "min_week": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Week"
+          }
+        },
+        "required": [
+          "min_month",
+          "max_month",
+          "min_week",
+          "max_week"
+        ],
+        "title": "DateBounds",
+        "type": "object"
+      },
+      "Dimensions": {
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "channels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Channels",
+            "type": "array"
+          },
+          "countries": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Countries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "channels",
+          "countries",
+          "categories"
+        ],
+        "title": "Dimensions",
+        "type": "object"
+      },
+      "Envelope_Channels_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Channels"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[Channels]",
+        "type": "object"
+      },
+      "Envelope_CohortTable_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CohortTable"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[CohortTable]",
+        "type": "object"
+      },
+      "Envelope_Curves_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Curves"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[Curves]",
+        "type": "object"
+      },
+      "Envelope_CustomerDetail_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CustomerDetail"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[CustomerDetail]",
+        "type": "object"
+      },
+      "Envelope_CustomerPage_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CustomerPage"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[CustomerPage]",
+        "type": "object"
+      },
+      "Envelope_FirstProduct_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/FirstProduct"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[FirstProduct]",
+        "type": "object"
+      },
+      "Envelope_Rfm_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Rfm"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[Rfm]",
+        "type": "object"
+      },
+      "Envelope_SecondOrder_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SecondOrder"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[SecondOrder]",
+        "type": "object"
+      },
+      "Envelope_Summary_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Summary"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[Summary]",
+        "type": "object"
+      },
+      "ExportOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Download Url"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "view": {
+            "title": "View",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "view",
+          "created_at",
+          "download_url",
+          "expires_at",
+          "error"
+        ],
+        "title": "ExportOut",
+        "type": "object"
+      },
+      "ExportRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "format": {
+            "enum": [
+              "csv",
+              "pdf"
+            ],
+            "title": "Format",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "default": {},
+            "title": "Params",
+            "type": "object"
+          },
+          "view": {
+            "enum": [
+              "summary",
+              "cohorts",
+              "repeat",
+              "segments",
+              "channels",
+              "customers",
+              "data",
+              "first_product"
+            ],
+            "title": "View",
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "view"
+        ],
+        "title": "ExportRequest",
+        "type": "object"
+      },
+      "Finding": {
+        "properties": {
+          "effect": {
+            "title": "Effect",
+            "type": "number"
+          },
+          "href": {
+            "title": "Href",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "cohort",
+              "timing",
+              "first_purchase"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "metric_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Metric Ids",
+            "type": "array"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "text",
+          "href",
+          "effect",
+          "metric_ids"
+        ],
+        "title": "Finding",
+        "type": "object"
+      },
+      "FirstProduct": {
+        "properties": {
+          "findings": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "hidden_small": {
+            "description": "Items left out for having fewer than min_buyers eligible customers",
+            "title": "Hidden Small",
+            "type": "integer"
+          },
+          "level": {
+            "enum": [
+              "category",
+              "product"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "min_buyers": {
+            "title": "Min Buyers",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/FirstProductRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "store": {
+            "$ref": "#/components/schemas/StoreRate"
+          }
+        },
+        "required": [
+          "level",
+          "min_buyers",
+          "store",
+          "rows",
+          "hidden_small"
+        ],
+        "title": "FirstProduct",
+        "type": "object"
+      },
+      "FirstProductRow": {
+        "properties": {
+          "diff_pts": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diff Pts"
+          },
+          "eligible": {
+            "title": "Eligible",
+            "type": "integer"
+          },
+          "first_buyers": {
+            "title": "First Buyers",
+            "type": "integer"
+          },
+          "high": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High"
+          },
+          "item_id": {
+            "title": "Item Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "low": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low"
+          },
+          "rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate"
+          },
+          "repeaters": {
+            "title": "Repeaters",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "item_id",
+          "label",
+          "first_buyers",
+          "eligible",
+          "repeaters",
+          "rate",
+          "low",
+          "high",
+          "diff_pts"
+        ],
+        "title": "FirstProductRow",
+        "type": "object"
+      },
+      "Freshness": {
+        "properties": {
+          "last_run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "state": {
+            "enum": [
+              "fresh",
+              "stale",
+              "empty"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state",
+          "message",
+          "last_run"
+        ],
+        "title": "Freshness",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HistBin": {
+        "properties": {
+          "customers": {
+            "title": "Customers",
+            "type": "integer"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Inclusive; null for the open-ended last bin",
+            "title": "End"
+          },
+          "start": {
+            "title": "Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "customers"
+        ],
+        "title": "HistBin",
+        "type": "object"
+      },
+      "JobOut": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "job_id": {
+            "title": "Job Id",
+            "type": "integer"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "kind",
+          "status",
+          "attempts",
+          "error",
+          "created_at",
+          "finished_at",
+          "run"
+        ],
+        "title": "JobOut",
+        "type": "object"
+      },
+      "Meta": {
+        "properties": {
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "data_through": {
+            "format": "date",
+            "title": "Data Through",
+            "type": "string"
+          },
+          "data_version": {
+            "title": "Data Version",
+            "type": "string"
+          },
+          "filters": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Filters",
+            "type": "object"
+          },
+          "metrics": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data_version",
+          "data_through",
+          "timezone",
+          "currency"
+        ],
+        "title": "Meta",
+        "type": "object"
+      },
+      "MetaData": {
+        "properties": {
+          "bounds": {
+            "$ref": "#/components/schemas/DateBounds"
+          },
+          "clv_visible": {
+            "title": "Clv Visible",
+            "type": "boolean"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "data_through": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Through"
+          },
+          "data_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Version"
+          },
+          "dimensions": {
+            "$ref": "#/components/schemas/Dimensions"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/Freshness"
+          },
+          "gross_margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gross Margin"
+          },
+          "has_clv": {
+            "title": "Has Clv",
+            "type": "boolean"
+          },
+          "has_spend": {
+            "title": "Has Spend",
+            "type": "boolean"
+          },
+          "lapse_threshold_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lapse Threshold Days"
+          },
+          "locale": {
+            "title": "Locale",
+            "type": "string"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "role": {
+            "enum": [
+              "admin",
+              "viewer"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "store_name": {
+            "title": "Store Name",
+            "type": "string"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data_version",
+          "data_through",
+          "published_at",
+          "store_name",
+          "timezone",
+          "currency",
+          "locale",
+          "freshness",
+          "dimensions",
+          "bounds",
+          "lapse_threshold_days",
+          "has_spend",
+          "has_clv",
+          "clv_visible",
+          "gross_margin",
+          "role",
+          "email"
+        ],
+        "title": "MetaData",
+        "type": "object"
+      },
+      "MetricDef": {
+        "properties": {
+          "caveats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Caveats",
+            "type": "array"
+          },
+          "definition": {
+            "title": "Definition",
+            "type": "string"
+          },
+          "formula": {
+            "title": "Formula",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "short": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "short",
+          "definition",
+          "formula",
+          "model",
+          "unit",
+          "caveats"
+        ],
+        "title": "MetricDef",
+        "type": "object"
+      },
+      "MetricsDoc": {
+        "properties": {
+          "lapse_threshold": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lapse Threshold"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/MetricDef"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "rules": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Rules",
+            "type": "object"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/SettingsOut"
+          }
+        },
+        "required": [
+          "rules",
+          "metrics",
+          "settings",
+          "lapse_threshold"
+        ],
+        "title": "MetricsDoc",
+        "type": "object"
+      },
+      "ReconDay": {
+        "properties": {
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          },
+          "delta": {
+            "title": "Delta",
+            "type": "number"
+          },
+          "mart_revenue": {
+            "title": "Mart Revenue",
+            "type": "number"
+          },
+          "source_revenue": {
+            "title": "Source Revenue",
+            "type": "number"
+          }
+        },
+        "required": [
+          "day",
+          "source_revenue",
+          "mart_revenue",
+          "delta"
+        ],
+        "title": "ReconDay",
+        "type": "object"
+      },
+      "Rfm": {
+        "properties": {
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/RfmCell"
+            },
+            "title": "Cells",
+            "type": "array"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/RfmSegment"
+            },
+            "title": "Segments",
+            "type": "array"
+          },
+          "total_customers": {
+            "title": "Total Customers",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cells",
+          "segments",
+          "total_customers"
+        ],
+        "title": "Rfm",
+        "type": "object"
+      },
+      "RfmCell": {
+        "properties": {
+          "avg_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Value"
+          },
+          "customers": {
+            "title": "Customers",
+            "type": "integer"
+          },
+          "f": {
+            "title": "F",
+            "type": "integer"
+          },
+          "lapsed": {
+            "title": "Lapsed",
+            "type": "integer"
+          },
+          "r": {
+            "title": "R",
+            "type": "integer"
+          },
+          "segment": {
+            "title": "Segment",
+            "type": "string"
+          }
+        },
+        "required": [
+          "r",
+          "f",
+          "segment",
+          "customers",
+          "avg_value",
+          "lapsed"
+        ],
+        "title": "RfmCell",
+        "type": "object"
+      },
+      "RfmSegment": {
+        "properties": {
+          "avg_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Value"
+          },
+          "customers": {
+            "title": "Customers",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "net_revenue": {
+            "title": "Net Revenue",
+            "type": "number"
+          },
+          "share": {
+            "title": "Share",
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "customers",
+          "share",
+          "net_revenue",
+          "avg_value"
+        ],
+        "title": "RfmSegment",
+        "type": "object"
+      },
+      "RunBrief": {
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "trigger": {
+            "title": "Trigger",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "trigger",
+          "started_at",
+          "finished_at",
+          "error"
+        ],
+        "title": "RunBrief",
+        "type": "object"
+      },
+      "RunOut": {
+        "properties": {
+          "data_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Version"
+          },
+          "duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "reconciliation": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reconciliation"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Steps",
+            "type": "array"
+          },
+          "tests": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tests"
+          },
+          "trigger": {
+            "title": "Trigger",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "trigger",
+          "started_at",
+          "finished_at",
+          "error",
+          "duration_s",
+          "steps",
+          "tests",
+          "reconciliation",
+          "data_version"
+        ],
+        "title": "RunOut",
+        "type": "object"
+      },
+      "RunRequested": {
+        "properties": {
+          "existing": {
+            "title": "Existing",
+            "type": "boolean"
+          },
+          "job_id": {
+            "title": "Job Id",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "status",
+          "existing"
+        ],
+        "title": "RunRequested",
+        "type": "object"
+      },
+      "SecondOrder": {
+        "properties": {
+          "bins": {
+            "items": {
+              "$ref": "#/components/schemas/HistBin"
+            },
+            "title": "Bins",
+            "type": "array"
+          },
+          "findings": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "first_buyers": {
+            "title": "First Buyers",
+            "type": "integer"
+          },
+          "median_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Days"
+          },
+          "p90_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P90 Days"
+          },
+          "repeaters": {
+            "title": "Repeaters",
+            "type": "integer"
+          },
+          "share_after_90": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share After 90"
+          }
+        },
+        "required": [
+          "bins",
+          "median_days",
+          "p90_days",
+          "repeaters",
+          "first_buyers",
+          "share_after_90"
+        ],
+        "title": "SecondOrder",
+        "type": "object"
+      },
+      "SettingsOut": {
+        "properties": {
+          "as_of_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of Date"
+          },
+          "clv_weekday": {
+            "title": "Clv Weekday",
+            "type": "integer"
+          },
+          "gross_margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gross Margin"
+          },
+          "lapse_threshold_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lapse Threshold Days"
+          },
+          "locale": {
+            "title": "Locale",
+            "type": "string"
+          },
+          "qualifying_statuses": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Qualifying Statuses",
+            "type": "array"
+          },
+          "refresh_time_local": {
+            "title": "Refresh Time Local",
+            "type": "string"
+          },
+          "reporting_currency": {
+            "title": "Reporting Currency",
+            "type": "string"
+          },
+          "reporting_tz": {
+            "title": "Reporting Tz",
+            "type": "string"
+          },
+          "store_name": {
+            "title": "Store Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "store_name",
+          "reporting_tz",
+          "reporting_currency",
+          "locale",
+          "qualifying_statuses",
+          "lapse_threshold_days",
+          "gross_margin",
+          "as_of_date",
+          "refresh_time_local",
+          "clv_weekday"
+        ],
+        "title": "SettingsOut",
+        "type": "object"
+      },
+      "SettingsSaved": {
+        "properties": {
+          "rebuild_job_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rebuild Job Id"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/SettingsOut"
+          }
+        },
+        "required": [
+          "settings",
+          "rebuild_job_id"
+        ],
+        "title": "SettingsSaved",
+        "type": "object"
+      },
+      "SettingsUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "clear": {
+            "default": [],
+            "items": {
+              "enum": [
+                "lapse_threshold_days",
+                "gross_margin",
+                "as_of_date"
+              ],
+              "type": "string"
+            },
+            "title": "Clear",
+            "type": "array"
+          },
+          "gross_margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gross Margin"
+          },
+          "lapse_threshold_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lapse Threshold Days"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "qualifying_statuses": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qualifying Statuses"
+          },
+          "refresh_time_local": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Time Local"
+          },
+          "reporting_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reporting Currency"
+          },
+          "reporting_tz": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reporting Tz"
+          },
+          "store_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Store Name"
+          }
+        },
+        "title": "SettingsUpdate",
+        "type": "object"
+      },
+      "StoreRate": {
+        "properties": {
+          "eligible": {
+            "title": "Eligible",
+            "type": "integer"
+          },
+          "rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate"
+          },
+          "repeaters": {
+            "title": "Repeaters",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "eligible",
+          "repeaters",
+          "rate"
+        ],
+        "title": "StoreRate",
+        "type": "object"
+      },
+      "Summary": {
+        "properties": {
+          "findings": {
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "low_repeat": {
+            "description": "True when repeat is rare; the UI leads with timing and first-purchase findings",
+            "title": "Low Repeat",
+            "type": "boolean"
+          },
+          "vitals": {
+            "items": {
+              "$ref": "#/components/schemas/Vital"
+            },
+            "title": "Vitals",
+            "type": "array"
+          }
+        },
+        "required": [
+          "findings",
+          "vitals",
+          "low_repeat"
+        ],
+        "title": "Summary",
+        "type": "object"
+      },
+      "UserInvite": {
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "role": {
+            "default": "viewer",
+            "enum": [
+              "admin",
+              "viewer"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "UserInvite",
+        "type": "object"
+      },
+      "UserOut": {
+        "properties": {
+          "disabled": {
+            "title": "Disabled",
+            "type": "boolean"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "invited_at": {
+            "format": "date-time",
+            "title": "Invited At",
+            "type": "string"
+          },
+          "invited_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invited By"
+          },
+          "last_seen_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Seen At"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "role": {
+            "enum": [
+              "admin",
+              "viewer"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "role",
+          "name",
+          "invited_by",
+          "invited_at",
+          "last_seen_at",
+          "disabled"
+        ],
+        "title": "UserOut",
+        "type": "object"
+      },
+      "UserPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "disabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disabled"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "enum": [
+                  "admin",
+                  "viewer"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          }
+        },
+        "title": "UserPatch",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "Vital": {
+        "properties": {
+          "change": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change"
+          },
+          "current": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VitalPoint"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "count",
+              "rate",
+              "currency"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "metric_id": {
+            "title": "Metric Id",
+            "type": "string"
+          },
+          "previous": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VitalPoint"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "metric_id",
+          "label",
+          "kind",
+          "current",
+          "previous",
+          "change"
+        ],
+        "title": "Vital",
+        "type": "object"
+      },
+      "VitalPoint": {
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "label",
+          "value",
+          "n"
+        ],
+        "title": "VitalPoint",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Cohort and retention metrics over published marts. Every number links to a definition in /v1/metrics.",
+    "title": "Retention API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/healthz": {
+      "get": {
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Healthz Healthz Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "readyz_readyz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Readiness: database reachable and data published",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/channels": {
+      "get": {
+        "operationId": "channels_v1_channels_get",
+        "parameters": [
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Channels_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Channel performance: CAC, LTV, LTV:CAC and payback (spend is per channel only)",
+        "tags": [
+          "channels"
+        ]
+      }
+    },
+    "/v1/cohorts/curves": {
+      "get": {
+        "operationId": "curves_v1_cohorts_curves_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "month",
+              "enum": [
+                "month",
+                "week"
+              ],
+              "title": "Granularity",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "measure",
+            "required": false,
+            "schema": {
+              "default": "cumulative",
+              "enum": [
+                "customers",
+                "revenue",
+                "cumulative"
+              ],
+              "title": "Measure",
+              "type": "string"
+            }
+          },
+          {
+            "description": "First cohort, YYYY-MM or YYYY-MM-DD",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort, YYYY-MM or YYYY-MM-DD",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort, YYYY-MM or YYYY-MM-DD",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort, YYYY-MM or YYYY-MM-DD",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Curves_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One series per cohort plus the median of the last six cohorts",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/v1/cohorts/retention": {
+      "get": {
+        "operationId": "retention_v1_cohorts_retention_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "month",
+              "enum": [
+                "month",
+                "week"
+              ],
+              "title": "Granularity",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "measure",
+            "required": false,
+            "schema": {
+              "default": "customers",
+              "enum": [
+                "customers",
+                "revenue",
+                "cumulative"
+              ],
+              "title": "Measure",
+              "type": "string"
+            }
+          },
+          {
+            "description": "First cohort, YYYY-MM or YYYY-MM-DD",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort, YYYY-MM or YYYY-MM-DD",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort, YYYY-MM or YYYY-MM-DD",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort, YYYY-MM or YYYY-MM-DD",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CohortTable_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cohort table. Arrays end where observability ends; the client never invents zeros.",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/v1/customers": {
+      "get": {
+        "operationId": "customers_v1_customers_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "segment",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Segment"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "default": "all",
+              "enum": [
+                "all",
+                "active",
+                "lapsed",
+                "drifting"
+              ],
+              "title": "State",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "value",
+              "enum": [
+                "value",
+                "recent",
+                "orders",
+                "risk"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CustomerPage_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Customers, keyset-paginated. Emails are masked for viewers.",
+        "tags": [
+          "segments",
+          "customers"
+        ]
+      }
+    },
+    "/v1/customers/{customer_key}": {
+      "get": {
+        "operationId": "customer_v1_customers__customer_key__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customer_key",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "title": "Customer Key",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CustomerDetail_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One customer with their order timeline. Email masked for viewers.",
+        "tags": [
+          "segments",
+          "customers"
+        ]
+      }
+    },
+    "/v1/data-health": {
+      "get": {
+        "operationId": "data_health_v1_data_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataHealth"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Runs, freshness, tests, reconciliation, identity merge rate, dropped rows, CLV holdout",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/v1/exports": {
+      "post": {
+        "operationId": "create_export_v1_exports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv": {}
+            },
+            "description": "CSV, streamed"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "CSV: streamed now (viewer). PDF: queued job (admin).",
+        "tags": [
+          "exports"
+        ]
+      }
+    },
+    "/v1/exports/{export_id}": {
+      "get": {
+        "operationId": "export_status_v1_exports__export_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "export_id",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "title": "Export Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export status and a 24-hour download link",
+        "tags": [
+          "exports"
+        ]
+      }
+    },
+    "/v1/meta": {
+      "get": {
+        "operationId": "meta_v1_meta_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetaData"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Data version, freshness, settings and allowed filter values",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/v1/metrics": {
+      "get": {
+        "operationId": "metrics_v1_metrics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsDoc"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Metric definitions (metrics.yml) and the current settings",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/v1/pipeline/runs": {
+      "post": {
+        "operationId": "request_run_v1_pipeline_runs_post",
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunRequested"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Enqueue a manual refresh. If one is already queued or running, returns it.",
+        "tags": [
+          "pipeline"
+        ]
+      }
+    },
+    "/v1/pipeline/runs/{job_id}": {
+      "get": {
+        "operationId": "run_status_v1_pipeline_runs__job_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "title": "Job Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Status of a refresh job and its run",
+        "tags": [
+          "pipeline"
+        ]
+      }
+    },
+    "/v1/repeat/first-product": {
+      "get": {
+        "operationId": "first_product_route_v1_repeat_first_product_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "level",
+            "required": false,
+            "schema": {
+              "default": "category",
+              "enum": [
+                "category",
+                "product"
+              ],
+              "title": "Level",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_buyers",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 10000,
+              "minimum": 30,
+              "title": "Min Buyers",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_FirstProduct_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "First product or category \u2192 repeat within 90 days, sorted by effect size",
+        "tags": [
+          "repeat"
+        ]
+      }
+    },
+    "/v1/repeat/second-order": {
+      "get": {
+        "operationId": "second_order_route_v1_repeat_second_order_get",
+        "parameters": [
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_SecondOrder_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Time-to-second-order histogram with median and 90th percentile",
+        "tags": [
+          "repeat"
+        ]
+      }
+    },
+    "/v1/segments/rfm": {
+      "get": {
+        "operationId": "rfm_v1_segments_rfm_get",
+        "parameters": [
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Rfm_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "5x5 Recency x Frequency grid with segment totals",
+        "tags": [
+          "segments",
+          "customers"
+        ]
+      }
+    },
+    "/v1/segments/{segment}/customers": {
+      "get": {
+        "operationId": "segment_customers_v1_segments__segment__customers_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "segment",
+            "required": true,
+            "schema": {
+              "title": "Segment",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "default": "all",
+              "enum": [
+                "all",
+                "active",
+                "lapsed",
+                "drifting"
+              ],
+              "title": "State",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "value",
+              "enum": [
+                "value",
+                "recent",
+                "orders",
+                "risk"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CustomerPage_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Customers in one RFM segment",
+        "tags": [
+          "segments",
+          "customers"
+        ]
+      }
+    },
+    "/v1/settings": {
+      "get": {
+        "operationId": "get_settings_v1_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Current settings (admin)",
+        "tags": [
+          "meta"
+        ]
+      },
+      "put": {
+        "operationId": "put_settings_v1_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsSaved"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Change settings; triggers a rebuild (admin)",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/v1/summary": {
+      "get": {
+        "operationId": "summary_v1_summary_get",
+        "parameters": [
+          {
+            "description": "First cohort month, YYYY-MM",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First cohort month, YYYY-MM",
+              "title": "From"
+            }
+          },
+          {
+            "description": "Last cohort month, YYYY-MM",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Last cohort month, YYYY-MM",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Acquisition channel(s)",
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Acquisition channel(s)",
+              "title": "Channel"
+            }
+          },
+          {
+            "description": "Country at first order",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country at first order",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Category of the first order",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Category of the first order",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Summary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Findings and vitals for the Summary page",
+        "tags": [
+          "summary"
+        ]
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "operationId": "list_users_v1_users_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserOut"
+                  },
+                  "title": "Response List Users V1 Users Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Everyone with access",
+        "tags": [
+          "users"
+        ]
+      },
+      "post": {
+        "operationId": "invite_v1_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInvite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invite someone (they sign in with that email)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/v1/users/{email}": {
+      "delete": {
+        "operationId": "remove_user_v1_users__email__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "required": true,
+            "schema": {
+              "maxLength": 320,
+              "title": "Email",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove access",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "patch_user_v1_users__email__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "required": true,
+            "schema": {
+              "maxLength": 320,
+              "title": "Email",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Change role or disable",
+        "tags": [
+          "users"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+# Credentials come from the environment. The worker derives DBT_* from PIPELINE_DATABASE_URL
+# and passes the PII key as a session setting (PGOPTIONS), so it never appears in compiled SQL.
+retention:
+  target: build
+  outputs:
+    build:
+      type: postgres
+      host: "{{ env_var('DBT_HOST', 'localhost') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | int }}"
+      user: "{{ env_var('DBT_USER', 'pipeline_rw') }}"
+      password: "{{ env_var('DBT_PASSWORD', '') }}"
+      dbname: "{{ env_var('DBT_DBNAME', 'retention') }}"
+      schema: analytics_build
+      threads: 4
+      connect_timeout: 15
+      sslmode: "{{ env_var('DBT_SSLMODE', 'prefer') }}"

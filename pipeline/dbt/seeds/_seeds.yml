@@ -1,0 +1,19 @@
+version: 2
+
+seeds:
+  - name: excluded_line_codes
+    description: Non-product line codes (shipping, fees, adjustments) excluded from revenue. `*` applies to every source.
+    config:
+      column_types: {source: text, match_type: text, code: text, reason: text}
+  - name: channel_rules
+    description: >
+      First-touch acquisition channel from UTM, referrer and discount code. Lowest priority number
+      wins. Admin-editable; a change is a definition change and needs a rebuild.
+    config:
+      column_types: {priority: int, field: text, match_type: text, pattern: text, channel: text}
+  - name: category_keywords
+    description: >
+      Category for products whose source has none (e.g. Online Retail II), matched as whole words in
+      the product name. Lowest priority wins; longer phrases should get lower numbers than their parts.
+    config:
+      column_types: {priority: int, pattern: text, category: text}

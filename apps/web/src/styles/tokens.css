@@ -1,0 +1,37 @@
+/* Design tokens (spec §8.11). The only place colours, type and motion are defined. */
+:root {
+  --ink: #18222d;
+  --graphite: #5a6672;
+  --rule: #d6dbdf;
+  --ground: #eef1f3;
+  --sheet: #ffffff;
+  --highlighter: #f4d35e; /* selection only: never text, never data encoding */
+  --signal: #b3261e; /* errors and flagged anomalies only: never data encoding */
+
+  /* Single-hue retention ramp, light to dark.
+     ramp-5 is #4a79a8 instead of the specified #5584b3: at #5584b3 neither ink (4.09:1) nor
+     white (3.93:1) text reaches WCAG AA 4.5:1. See docs/adr/0012-ramp-step-5-contrast.md. */
+  --ramp-1: #f1f5fa;
+  --ramp-2: #d6e3f0;
+  --ramp-3: #b0c8e1;
+  --ramp-4: #82a7cc;
+  --ramp-5: #4a79a8;
+  --ramp-6: #2f6296;
+  --ramp-7: #17406e;
+
+  --font-ui: var(--font-public-sans), "Public Sans", system-ui, sans-serif;
+  --font-text: var(--font-source-serif), "Source Serif 4", Georgia, serif;
+
+  --radius-sheet: 6px;
+  --radius-control: 4px;
+  --shadow-pop: 0 8px 24px rgb(24 34 45 / 0.12);
+
+  --dur-quick: 120ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-quick: 0ms;
+  }
+}

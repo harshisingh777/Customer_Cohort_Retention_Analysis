@@ -1,0 +1,25 @@
+priority,field,match_type,pattern,channel
+10,utm_medium,exact,cpc,Paid search
+11,utm_medium,exact,ppc,Paid search
+12,utm_medium,exact,paidsearch,Paid search
+13,utm_medium,exact,paid_search,Paid search
+20,utm_medium,exact,paid_social,Paid social
+21,utm_medium,exact,paidsocial,Paid social
+22,utm_medium,exact,social_paid,Paid social
+30,utm_medium,exact,email,Email
+31,utm_source,exact,klaviyo,Email
+32,utm_source,exact,newsletter,Email
+33,utm_source,exact,mailchimp,Email
+40,utm_medium,exact,affiliate,Affiliate
+50,discount_code,prefix,infl,Influencer
+60,utm_medium,exact,organic_social,Organic social
+61,utm_medium,exact,social,Organic social
+70,referrer,contains,google.,Organic search
+71,referrer,contains,bing.,Organic search
+72,referrer,contains,duckduckgo.,Organic search
+73,referrer,contains,ecosia.,Organic search
+80,referrer,contains,instagram.,Organic social
+81,referrer,contains,facebook.,Organic social
+82,referrer,contains,tiktok.,Organic social
+83,referrer,contains,pinterest.,Organic social
+90,utm_medium,exact,referral,Referral

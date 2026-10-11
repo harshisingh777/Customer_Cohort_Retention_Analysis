@@ -1,0 +1,89 @@
+priority,pattern,category
+10,CHRISTMAS,Christmas
+11,ADVENT,Christmas
+12,XMAS,Christmas
+13,SNOWFLAKE,Christmas
+14,REINDEER,Christmas
+15,BAUBLE,Christmas
+20,CANDLE,Candles and lights
+21,T-LIGHT,Candles and lights
+22,TEA LIGHT,Candles and lights
+23,TEALIGHT,Candles and lights
+24,LANTERN,Candles and lights
+25,LIGHTS,Candles and lights
+26,LAMP,Candles and lights
+27,NIGHT LIGHT,Candles and lights
+30,BAG,Bags
+31,TOTE,Bags
+32,PURSE,Bags
+33,SHOPPER,Bags
+40,CARD,Cards and wrap
+41,WRAP,Cards and wrap
+42,GIFT TAG,Cards and wrap
+43,RIBBON,Cards and wrap
+44,TISSUE,Cards and wrap
+45,ENVELOPE,Cards and wrap
+50,NOTEBOOK,Stationery
+51,PENCIL,Stationery
+52,PEN,Stationery
+53,STICKER,Stationery
+54,ERASER,Stationery
+55,NOTE PAD,Stationery
+56,NOTEPAD,Stationery
+57,CALENDAR,Stationery
+60,MUG,Kitchen and dining
+61,CUP,Kitchen and dining
+62,PLATE,Kitchen and dining
+63,BOWL,Kitchen and dining
+64,TEAPOT,Kitchen and dining
+65,JAR,Kitchen and dining
+66,TIN,Kitchen and dining
+67,LUNCH BOX,Kitchen and dining
+68,BAKING,Kitchen and dining
+69,CAKE,Kitchen and dining
+70,NAPKINS,Kitchen and dining
+71,APRON,Kitchen and dining
+72,BOTTLE,Kitchen and dining
+73,CUTLERY,Kitchen and dining
+74,TRAY,Kitchen and dining
+80,CUSHION,Home textiles
+81,THROW,Home textiles
+82,BLANKET,Home textiles
+83,TOWEL,Home textiles
+84,DOORMAT,Home textiles
+90,FRAME,Home decor
+91,CLOCK,Home decor
+92,SIGN,Home decor
+93,MIRROR,Home decor
+94,HOOK,Home decor
+95,VASE,Home decor
+96,DECORATION,Home decor
+97,HANGING,Home decor
+98,WREATH,Home decor
+99,ORNAMENT,Home decor
+100,DRAWER,Home decor
+101,BOX,Storage
+102,BASKET,Storage
+103,HOLDER,Storage
+104,STORAGE,Storage
+110,PARTY,Party
+111,BUNTING,Party
+112,BALLOON,Party
+113,CONFETTI,Party
+120,GARDEN,Garden
+121,PLANT,Garden
+122,WATERING,Garden
+123,BIRD,Garden
+130,NECKLACE,Jewellery
+131,EARRINGS,Jewellery
+132,BRACELET,Jewellery
+133,RING,Jewellery
+134,BROOCH,Jewellery
+140,TOY,Toys and games
+141,DOLL,Toys and games
+142,GAME,Toys and games
+143,PUZZLE,Toys and games
+144,SKITTLES,Toys and games
+150,UMBRELLA,Accessories
+5,MIRROR COMPACT,Accessories
+6,HOT WATER BOTTLE,Home textiles

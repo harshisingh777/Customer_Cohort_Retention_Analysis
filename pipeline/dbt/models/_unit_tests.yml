@@ -1,0 +1,121 @@
+version: 2
+
+# Cohort logic against fixtures (spec §11): refund-only first order, guest merged by email,
+# order at 00:30 local on the 1st, current-month cohort excluded, customer skipping months.
+
+unit_tests:
+  - name: stg_orders_identity_timezone_refunds_and_exclusions
+    model: stg_orders
+    overrides:
+      vars:
+        as_of_date: "2025-06-01"
+        reporting_tz: Europe/London
+        reporting_currency: GBP
+        qualifying_statuses: ["paid"]
+    given:
+      - input: source('raw', 'orders')
+        rows:
+          # 23:30 UTC on 31 March is 00:30 BST on 1 April: April, not March.
+          - {source: fixture, source_id: O1, source_updated_at: "2025-03-31 23:30:00+00",
+             payload: '{"customer_id": "42", "email": "jane@example.com", "created_at": "2025-03-31T23:30:00+00:00", "currency": "GBP", "status": "paid", "test": false, "country": "GB", "utm_medium": "cpc"}'}
+          # Guest checkout with the same email (different case, padding): merged into c:42.
+          - {source: fixture, source_id: O2, source_updated_at: "2025-04-10 12:00:00+00",
+             payload: '{"customer_id": null, "email": " Jane@Example.com ", "created_at": "2025-04-10T12:00:00+00:00", "currency": "GBP", "status": "paid", "test": false}'}
+          # Fully refunded: does not qualify, cannot start a cohort.
+          - {source: fixture, source_id: O3, source_updated_at: "2025-02-01 12:00:00+00",
+             payload: '{"customer_id": "7", "created_at": "2025-02-01T12:00:00+00:00", "currency": "GBP", "status": "paid", "test": false}'}
+          # Partially refunded: qualifies with reduced revenue.
+          - {source: fixture, source_id: O4, source_updated_at: "2025-02-02 12:00:00+00",
+             payload: '{"customer_id": "7", "created_at": "2025-02-02T12:00:00+00:00", "currency": "GBP", "status": "paid", "test": false}'}
+          - {source: fixture, source_id: O5, source_updated_at: "2025-02-03 12:00:00+00",
+             payload: '{"customer_id": "7", "created_at": "2025-02-03T12:00:00+00:00", "currency": "GBP", "status": "paid", "test": true}'}
+          - {source: fixture, source_id: O6, source_updated_at: "2025-02-04 12:00:00+00",
+             payload: '{"customer_id": "7", "created_at": "2025-02-04T12:00:00+00:00", "currency": "GBP", "status": "cancelled", "test": false}'}
+          # After the cutoff: not in the data yet.
+          - {source: fixture, source_id: O7, source_updated_at: "2025-06-01 10:00:00+00",
+             payload: '{"customer_id": "7", "created_at": "2025-06-01T10:00:00+00:00", "currency": "GBP", "status": "paid", "test": false}'}
+      - input: ref('stg_order_items')
+        rows:
+          - {source: fixture, order_id: O1, line_id: O1-1, line_amount: 30, category: Candles, sku: CAN-01, product_name: Fig candle}
+          - {source: fixture, order_id: O2, line_id: O2-1, line_amount: 20, category: Ceramics, sku: CER-01, product_name: Mug}
+          - {source: fixture, order_id: O3, line_id: O3-1, line_amount: 18, category: Candles, sku: CAN-01, product_name: Fig candle}
+          - {source: fixture, order_id: O4, line_id: O4-1, line_amount: 25, category: Kitchen, sku: KIT-01, product_name: Spoon}
+          - {source: fixture, order_id: O5, line_id: O5-1, line_amount: 25, category: Kitchen, sku: KIT-01, product_name: Spoon}
+          - {source: fixture, order_id: O6, line_id: O6-1, line_amount: 25, category: Kitchen, sku: KIT-01, product_name: Spoon}
+          - {source: fixture, order_id: O7, line_id: O7-1, line_amount: 25, category: Kitchen, sku: KIT-01, product_name: Spoon}
+      - input: ref('stg_refunds')
+        rows:
+          - {source: fixture, order_id: O3, refund_id: R1, amount: 18, refunded_at_local: "2025-02-03 09:00:00"}
+          - {source: fixture, order_id: O4, refund_id: R2, amount: 5, refunded_at_local: "2025-02-05 09:00:00"}
+      - input: ref('stg_customers')
+        rows:
+          - {source: fixture, platform_customer_id: "999", email_hmac: "not-a-match", country: GB}
+      - input: ref('channel_rules')
+        rows:
+          - {priority: 10, field: utm_medium, match_type: exact, pattern: cpc, channel: Paid search}
+      - input: source('raw', 'fx_rates')
+        rows:
+          - {date: "2025-01-01", base: EUR, quote: GBP, rate: 0.85}
+    expect:
+      rows:
+        - {order_id: O1, customer_key: "c:42", order_date_local: "2025-04-01", is_qualifying: true,  net_revenue: 30.0, identity_method: platform_id,  acquisition_channel: Paid search}
+        - {order_id: O2, customer_key: "c:42", order_date_local: "2025-04-10", is_qualifying: true,  net_revenue: 20.0, identity_method: email_merged, acquisition_channel: null}
+        - {order_id: O3, customer_key: "c:7",  order_date_local: "2025-02-01", is_qualifying: false, net_revenue: 0.0, identity_method: platform_id,  acquisition_channel: null}
+        - {order_id: O4, customer_key: "c:7",  order_date_local: "2025-02-02", is_qualifying: true,  net_revenue: 20.0, identity_method: platform_id,  acquisition_channel: null}
+        - {order_id: O5, customer_key: "c:7",  order_date_local: "2025-02-03", is_qualifying: false, net_revenue: 25.0, identity_method: platform_id,  acquisition_channel: null}
+        - {order_id: O6, customer_key: "c:7",  order_date_local: "2025-02-04", is_qualifying: false, net_revenue: 25.0, identity_method: platform_id,  acquisition_channel: null}
+        - {order_id: O7, customer_key: "c:7",  order_date_local: "2025-06-01", is_qualifying: false, net_revenue: 25.0, identity_method: platform_id,  acquisition_channel: null}
+
+  - name: int_orders_refund_only_first_order_does_not_start_sequence
+    model: int_orders
+    given:
+      - input: ref('stg_orders')
+        rows:
+          - {source: s, order_id: A1, customer_key: "c:1", order_ts_local: "2025-01-20 10:00:00", order_date_local: "2025-01-20", net_revenue: 0,  is_qualifying: false}
+          - {source: s, order_id: A2, customer_key: "c:1", order_ts_local: "2025-02-03 10:00:00", order_date_local: "2025-02-03", net_revenue: 40, is_qualifying: true}
+          - {source: s, order_id: A3, customer_key: "c:1", order_ts_local: "2025-04-03 10:00:00", order_date_local: "2025-04-03", net_revenue: 15, is_qualifying: true}
+          - {source: s, order_id: B1, customer_key: null,  order_ts_local: "2025-01-05 10:00:00", order_date_local: "2025-01-05", net_revenue: 9,  is_qualifying: true}
+    expect:
+      rows:
+        - {order_id: A2, customer_key: "c:1", order_seq: 1, next_order_ts_local: "2025-04-03 10:00:00"}
+        - {order_id: A3, customer_key: "c:1", order_seq: 2, next_order_ts_local: null}
+
+  - name: retention_monthly_censoring_skipped_months_and_current_cohort
+    model: mart_cohort_retention_monthly
+    overrides:
+      vars:
+        as_of_date: "2025-04-15"
+    given:
+      - input: ref('int_customer_acquisition')
+        rows:
+          - {customer_key: A, cohort_month: "2025-01-01", acquisition_channel: X, country: GB, first_category: C1}
+          - {customer_key: B, cohort_month: "2025-01-01", acquisition_channel: X, country: GB, first_category: C1}
+          - {customer_key: D, cohort_month: "2025-02-01", acquisition_channel: X, country: GB, first_category: C1}
+          # Acquired in the current, incomplete month: no cohort row at all.
+          - {customer_key: C, cohort_month: "2025-04-01", acquisition_channel: X, country: GB, first_category: C1}
+      - input: ref('int_customer_activity_monthly')
+        rows:
+          # A skips February and comes back in March.
+          - {customer_key: A, activity_month: "2025-01-01"}
+          - {customer_key: A, activity_month: "2025-03-01"}
+          - {customer_key: B, activity_month: "2025-01-01"}
+          - {customer_key: D, activity_month: "2025-02-01"}
+          - {customer_key: D, activity_month: "2025-04-01"}
+          - {customer_key: C, activity_month: "2025-04-01"}
+      - input: ref('int_orders')
+        rows:
+          - {customer_key: A, order_ts_local: "2025-01-10 10:00:00", net_revenue: 10, order_seq: 1}
+          - {customer_key: A, order_ts_local: "2025-03-10 10:00:00", net_revenue: 15, order_seq: 2}
+          - {customer_key: B, order_ts_local: "2025-01-12 10:00:00", net_revenue: 5,  order_seq: 1}
+          - {customer_key: D, order_ts_local: "2025-02-12 10:00:00", net_revenue: 12, order_seq: 1}
+          - {customer_key: D, order_ts_local: "2025-04-02 10:00:00", net_revenue: 9,  order_seq: 2}
+          - {customer_key: C, order_ts_local: "2025-04-03 10:00:00", net_revenue: 8,  order_seq: 1}
+    expect:
+      rows:
+        # Jan cohort: observable through March (periods 0-2). Feb is an observed zero.
+        - {cohort_month: "2025-01-01", period_number: 0, cohort_customers: 2, active_customers: 2, cum_repeat_customers: 0, net_revenue: 15}
+        - {cohort_month: "2025-01-01", period_number: 1, cohort_customers: 2, active_customers: 0, cum_repeat_customers: 0, net_revenue: 0}
+        - {cohort_month: "2025-01-01", period_number: 2, cohort_customers: 2, active_customers: 1, cum_repeat_customers: 1, net_revenue: 15}
+        # Feb cohort: April activity is in the incomplete month, so period 2 does not exist yet.
+        - {cohort_month: "2025-02-01", period_number: 0, cohort_customers: 1, active_customers: 1, cum_repeat_customers: 0, net_revenue: 12}
+        - {cohort_month: "2025-02-01", period_number: 1, cohort_customers: 1, active_customers: 0, cum_repeat_customers: 0, net_revenue: 0}

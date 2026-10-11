@@ -1,0 +1,70 @@
+"""Environment configuration. Every environment-specific value comes from here."""
+
+from functools import lru_cache
+
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Env(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    app_env: str = "local"
+    git_sha: str = "local"
+
+    migrator_database_url: str = ""
+    pipeline_database_url: str = ""
+    api_database_url: str = ""
+    api_ops_database_url: str = ""
+
+    pii_key: str = ""
+    api_jwt_secret: str = ""
+    export_signing_key: str = ""
+    bootstrap_admin_email: str = ""
+
+    api_base_url: str = "http://localhost:8000"
+    web_base_url: str = "http://localhost:3000"
+    cors_allowed_origins: str = "http://localhost:3000"
+
+    s3_bucket: str = ""
+    s3_endpoint_url: str = ""
+    s3_region: str = ""
+
+    sentry_dsn: str = ""
+    pipeline_webhook_url: str = ""
+
+    shopify_shop: str = ""
+    shopify_access_token: str = ""
+    woo_base_url: str = ""
+    woo_consumer_key: str = ""
+    woo_consumer_secret: str = ""
+
+    # Worker tuning
+    worker_poll_seconds: float = 3.0
+    data_dir: str = Field(
+        default="data", description="Where public datasets are cached for seeding"
+    )
+
+    @property
+    def cors_origins(self) -> list[str]:
+        return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
+
+    @property
+    def is_production(self) -> bool:
+        return self.app_env == "production"
+
+
+@lru_cache
+def get_env() -> Env:
+    return Env()
+
+
+def to_psycopg_url(url: str) -> str:
+    """Normalise a SQLAlchemy-style URL to a libpq one."""
+    return url.replace("postgresql+asyncpg://", "postgresql://").replace(
+        "postgresql+psycopg://", "postgresql://"
+    )
+
+
+def to_asyncpg_url(url: str) -> str:
+    return to_psycopg_url(url).replace("postgresql://", "postgresql+asyncpg://", 1)

@@ -1,0 +1,68 @@
+# Local development: postgres, api, worker, web.   just up
+name: retention
+
+x-env: &env
+  env_file: ../.env
+
+services:
+  db:
+    image: postgres:16-alpine
+    <<: *env
+    ports: ["5433:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init/01-roles.sh:/docker-entrypoint-initdb.d/01-roles.sh:ro
+      - ./db/roles.sql:/docker-entrypoint-initdb.d/roles.sql.inc:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  migrate:
+    build: {context: .., dockerfile: infra/docker/worker.Dockerfile, target: runtime}
+    image: retention-worker
+    <<: *env
+    command: ["alembic", "-c", "infra/migrations/alembic.ini", "upgrade", "head"]
+    depends_on:
+      db: {condition: service_healthy}
+
+  worker:
+    image: retention-worker
+    <<: *env
+    environment:
+      DATA_DIR: /app/data
+    volumes:
+      # Public datasets for `just seed`; local development only.
+      - ../data:/app/data
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    restart: unless-stopped
+
+  api:
+    build: {context: .., dockerfile: infra/docker/api.Dockerfile}
+    image: retention-api
+    <<: *env
+    ports: ["8000:8000"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  web:
+    build: {context: ../apps/web}
+    image: retention-web
+    <<: *env
+    environment:
+      API_BASE_URL: http://api:8000
+    ports: ["3000:3000"]
+    depends_on:
+      api: {condition: service_healthy}
+    restart: unless-stopped
+
+volumes:
+  pgdata:

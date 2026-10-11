@@ -1,0 +1,36 @@
+name: retention
+version: "1.0.0"
+config-version: 2
+profile: retention
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+clean-targets: ["target", "logs"]
+
+# Overridden at run time by the worker from ops.settings (see core/store_settings.py).
+vars:
+  reporting_tz: Europe/London
+  reporting_currency: GBP
+  qualifying_statuses: ["paid", "completed", "processing", "fulfilled", "partially_refunded", "delivered", "shipped", "invoiced"]
+  lapse_threshold_override: null
+  gross_margin: null
+  # First day NOT in the data. Null means today in the reporting timezone.
+  as_of_date: null
+  # Rates and findings below this denominator show an interval (metrics.yml: small_cohort_rule).
+  small_denominator: 30
+
+models:
+  retention:
+    +materialized: table
+    staging:
+      +tags: ["staging"]
+    intermediate:
+      +tags: ["intermediate"]
+    marts:
+      +tags: ["marts"]
+
+seeds:
+  retention:
+    +quote_columns: false

@@ -1,0 +1,13 @@
+.git
+.venv
+**/__pycache__
+**/node_modules
+apps/web/.next
+data
+pipeline/dbt/target
+pipeline/dbt/logs
+.env
+.env.*
+!.env.example
+*.pdf
+details.md

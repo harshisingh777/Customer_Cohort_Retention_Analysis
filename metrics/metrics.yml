@@ -1,0 +1,230 @@
+# The single source of metric definitions. Read by the API (/v1/metrics), rendered on the
+# Methodology page and in every on-screen definition. dbt models named here implement them.
+
+rules:
+  data_cutoff: >
+    Numbers run through the last full day before the refresh, in the store's reporting timezone.
+    A month or week that hasn't finished is never shown as a cohort or as a period.
+  small_denominator: >
+    Any rate with fewer than 30 customers behind it is shown in muted text with a Wilson 95%
+    interval, because one or two customers can swing it by several points.
+  findings: >
+    A finding appears only when the difference is outside the 95% interval of its comparison
+    baseline and both sides have at least 30 customers. The baseline for a cohort is the median
+    of the six cohorts before it; its interval is the Wilson interval at that median rate for the
+    average size of those cohorts. At most three findings per page, largest effect first.
+  additivity: >
+    Channel, country and first category are attributes a customer gets once, at their first
+    qualifying order. Every customer sits in exactly one bucket, so any filter combination is a
+    sum. "Customers who bought category X at any point" is a different, behavioural question and
+    isn't a filter.
+
+metrics:
+  - id: qualifying_order
+    label: Qualifying order
+    definition: An order that is paid, not cancelled, not a test, and has net revenue above zero after refunds.
+    formula: status in qualifying_statuses and not test and gross_product_revenue - refunds > 0
+    model: stg_orders
+    unit: flag
+    caveats:
+      - A fully refunded order doesn't make a customer active and can't start a cohort.
+      - Partial refunds reduce revenue but keep the order qualifying.
+      - Shipping, fees and adjustments are not revenue.
+
+  - id: cohort
+    label: Cohort
+    short: customers who first bought in the same month
+    definition: Customers whose first qualifying order fell in the same month (or week), in the reporting timezone.
+    formula: date_trunc(granularity, first_qualifying_order_ts_local)
+    model: int_customer_acquisition
+    unit: count
+    caveats:
+      - An order at 00:30 on 1 April local time belongs to April even though it is 31 March in UTC.
+
+  - id: cohort_size
+    label: Cohort size
+    definition: Number of customers in the cohort. Shown in place of month 0, which is always 100%.
+    formula: count(customers in cohort)
+    model: mart_cohort_retention_monthly
+    unit: count
+
+  - id: retention_rate
+    label: Customer retention
+    short: bought again
+    definition: Share of a cohort that bought again in a given month after their first order.
+    formula: active_customers(cohort, N) / cohort_customers(cohort)
+    model: mart_cohort_retention_monthly
+    unit: percent
+    caveats:
+      - Month 0 is always 100% and is shown as cohort size instead.
+      - Rates from fewer than 30 customers show an interval.
+      - Recent cohorts have fewer observable months. Blank cells are not zero.
+      - A customer who skips a month and comes back counts in the months they bought, not the gap.
+
+  - id: revenue_retention
+    label: Revenue retention
+    short: revenue kept
+    definition: The cohort's net revenue in month N as a share of its net revenue in its first month.
+    formula: net_revenue(cohort, N) / net_revenue(cohort, 0)
+    model: mart_cohort_revenue_monthly
+    unit: percent
+    caveats:
+      - Can exceed 100% when returning customers spend more than they did at first.
+
+  - id: cumulative_repeat
+    label: Cumulative repeat
+    short: had a second order by then
+    definition: Share of a cohort that had placed a second qualifying order by the end of month N.
+    formula: customers_with_second_order_by(cohort, N) / cohort_customers(cohort)
+    model: mart_cohort_retention_monthly
+    unit: percent
+    caveats:
+      - Never decreases, which makes it the clearest curve for comparing cohorts.
+
+  - id: time_to_second_order
+    label: Time to second order
+    definition: Days between a customer's first and second qualifying order, for customers who have one.
+    formula: median and 90th percentile of (second_order_date - first_order_date)
+    model: mart_second_order_days
+    unit: days
+    caveats:
+      - Recent cohorts haven't had long to return, so they pull the distribution towards shorter gaps.
+
+  - id: repeat_90d
+    label: Repeat within 90 days
+    short: came back within 90 days
+    definition: Among customers whose first order is at least 90 days before the data cutoff, the share with a second qualifying order within 90 days.
+    formula: count(second order on days 0-89) / count(first order >= 90 days before cutoff)
+    model: mart_first_product_repeat
+    unit: percent
+    caveats:
+      - Customers too new to have had 90 days are left out rather than counted as not returning.
+
+  - id: lapse_threshold
+    label: Lapse threshold
+    definition: The 90th percentile of gaps between consecutive orders, for customers with two or more, clamped to 60-365 days.
+    formula: clamp(p90(order gaps in days), 60, 365), or the admin override
+    model: int_lapse_threshold
+    unit: days
+    caveats:
+      - Derived from this store's own buying rhythm. An admin can override it in Settings.
+
+  - id: lapse_rate
+    label: Lapse rate
+    short: customers who stopped buying
+    definition: Share of customers whose last order is older than the store's lapse threshold.
+    formula: count(is_lapsed) / count(customers)
+    model: mart_customer_state
+    unit: percent
+    caveats:
+      - The threshold comes from this store's own purchase gaps. See Settings for the current value.
+      - This is the churn figure the product reports. "Not active in month N" is not churn.
+
+  - id: p_alive
+    label: P(alive)
+    short: chance they're still a customer
+    definition: Probability the customer is still active, from a BG/NBD model of each customer's purchase history.
+    formula: BG/NBD P(alive | frequency, recency, T)
+    model: mart_customer_clv
+    unit: probability
+    caveats:
+      - Drifting means P(alive) below 0.5 while not yet past the lapse threshold.
+      - BG/NBD only lets customers drop out after a repeat purchase, so one-order customers always score 1.0. The lapse threshold is what flags them.
+
+  - id: historical_ltv
+    label: Historical LTV
+    short: revenue per customer so far
+    definition: Net revenue (after refunds) per customer within a fixed age after their first order (90, 180 or 365 days).
+    formula: sum(net_revenue within N days of first order) / customers at least N days old
+    model: mart_ltv_cohort
+    unit: currency
+    caveats:
+      - Only customers old enough for the window count, so cohorts are comparable.
+
+  - id: predicted_ltv_12m
+    label: Predicted 12-month LTV
+    short: likely revenue over the next year
+    definition: Expected net revenue per customer over the next 12 months, as a 10th-90th percentile range.
+    formula: BG/NBD expected orders x Gamma-Gamma expected order value, over posterior draws
+    model: mart_customer_clv
+    unit: currency
+    caveats:
+      - Hidden when the model missed actual revenue by more than 30% on a 180-day holdout.
+      - For one customer, the range covers whether they keep buying, how often and how much (a predictive interval). For a group, it is the range of the group's average.
+      - A range, not a number. Plan around the low end.
+
+  - id: rfm_segment
+    label: RFM segment
+    definition: Recency and monetary value are scored 1-5 by quintile. Frequency uses fixed bands (1, 2, 3, 4-5, 6+ orders). Segments are regions of the recency x frequency grid.
+    formula: segment(R, F)
+    model: mart_customer_state
+    unit: category
+    caveats:
+      - Frequency uses bands because most customers have one order and quintiles collapse on ties.
+
+  - id: new_customers
+    label: New customers
+    definition: Customers whose first qualifying order was in the period.
+    formula: count(first qualifying orders in period)
+    model: int_customer_acquisition
+    unit: count
+
+  - id: net_revenue
+    label: Net revenue
+    definition: Product revenue after refunds, converted to the reporting currency at the order date's reference rate.
+    formula: (sum(product lines) - sum(refunds)) x fx_rate(order_date)
+    model: stg_orders
+    unit: currency
+    caveats:
+      - Excludes shipping, fees, taxes shown as lines, and manual adjustments.
+
+  - id: cac
+    label: CAC
+    short: cost to acquire a customer
+    definition: Channel spend in a month divided by the new customers from that channel that month.
+    formula: spend(channel, month) / new_customers(channel, month)
+    model: mart_channel_spend_monthly
+    unit: currency
+    caveats:
+      - Shown only when spend data exists. Never shown as zero.
+      - Spend is per channel, so country and category filters don't apply to CAC.
+
+  - id: ltv_cac
+    label: LTV:CAC
+    definition: 365-day historical LTV divided by CAC, for cohorts old enough; otherwise predicted 12-month LTV (p50), labelled as predicted.
+    formula: historical_ltv_365 / cac
+    model: mart_channel_month
+    unit: ratio
+
+  - id: payback_month
+    label: Payback month
+    short: when a customer pays back what they cost
+    definition: The first month in which cumulative net revenue per acquired customer, times gross margin, reaches CAC.
+    formula: min(N) where cum_net_revenue_per_customer(N) x gross_margin >= cac
+    model: mart_channel_month
+    unit: months
+    caveats:
+      - Gross margin is an assumption set by an admin, not measured.
+
+  - id: attribution_coverage
+    label: Attribution coverage
+    definition: Share of new customers whose first order has a known acquisition channel (from UTM, referrer or discount code).
+    formula: 1 - count(unattributed) / count(new customers)
+    model: int_customer_acquisition
+    unit: percent
+
+  - id: identity_merge_rate
+    label: Identity merge rate
+    definition: Share of guest-checkout orders whose email matched a registered customer and were merged into that customer.
+    formula: guest_orders_merged / guest_orders
+    model: mart_data_quality
+    unit: percent
+
+  - id: reconciliation
+    label: Reconciliation
+    definition: Net revenue in the marts against net revenue recomputed directly from the source rows, over the last 90 days.
+    formula: abs(mart_revenue - source_revenue) / source_revenue
+    model: mart_reconciliation
+    unit: percent
+    caveats:
+      - A refresh that misses by more than 0.5% is not published.

@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Typed customers. email_hmac = HMAC-SHA256(lower(trim(email)), PII_KEY); raw email is dropped here.
+    columns:
+      - name: platform_customer_id
+        tests: [not_null]
+
+  - name: stg_order_items
+    description: Product lines only, in the order currency, with a category (source, keyword seed, or 'uncategorized').
+    columns:
+      - name: line_id
+        tests: [not_null]
+      - name: line_amount
+        tests: [not_null]
+
+  - name: stg_refunds
+    description: Refunds of product lines, positive amounts in the order currency.
+
+  - name: stg_orders
+    description: >
+      One row per order with identity (customer_key), local timestamps, net revenue in the
+      reporting currency after refunds, and is_qualifying (paid status, not test, net revenue
+      > 0, before the cutoff).
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: fx_rate
+        description: Null when no reference rate exists on or before the order date. Such orders don't qualify.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: identity_method
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['platform_id', 'email_merged', 'email_only', 'none']
+
+  - name: customer_contacts
+    description: Admin-only email lookup, built into the pii schema. Read only through ops.customer_contacts().
+    columns:
+      - name: customer_key
+        tests: [unique, not_null]
