@@ -12,6 +12,7 @@ import asyncio
 import contextlib
 import datetime as dt
 import logging
+import re
 from dataclasses import dataclass
 
 import asyncpg
@@ -34,9 +35,10 @@ class Database:
     def __init__(self) -> None:
         env = get_env()
         if not env.api_database_url.startswith(("postgresql://", "postgres://", "postgresql+")):
+            # Show what was set, minus anything that could be a password, so it can be fixed.
+            seen = re.sub(r":[^:@/]*@", ":***@", env.api_database_url)[:40] or "empty"
             raise RuntimeError(
-                "API_DATABASE_URL must be a postgresql:// connection string"
-                + (" (it is empty)" if not env.api_database_url else "")
+                f"API_DATABASE_URL must be a postgresql:// connection string; got: {seen}"
             )
         self.ro: AsyncEngine = create_async_engine(
             to_asyncpg_url(env.api_database_url),

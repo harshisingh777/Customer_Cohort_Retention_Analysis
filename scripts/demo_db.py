@@ -65,6 +65,11 @@ def main() -> int:
     admin_url = os.environ["DEMO_ADMIN_DATABASE_URL"]
     password = os.environ["DEMO_ROLE_PASSWORD"]
     dbname = urlsplit(admin_url).path.lstrip("/")
+    if not admin_url.startswith(("postgresql://", "postgres://")) or "<" in admin_url + password:
+        sys.exit(
+            "DEMO_ADMIN_DATABASE_URL must be the real Neon connection string (postgresql://...) "
+            "and DEMO_ROLE_PASSWORD the real password, not the <placeholders> from docs/demo.md"
+        )
 
     if args.print_env:
         for role in ("api_ro", "api_ops", "web_auth"):
