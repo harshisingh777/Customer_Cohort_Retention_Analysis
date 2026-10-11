@@ -19,7 +19,7 @@ api = [
   "pyjwt>=2.10",
   "brotli-asgi>=1.4",
   "email-validator>=2.2",
-  "sentry-sdk[fastapi]>=2.20",
+  "sentry-sdk[fastapi]>=2.71.0",
   "boto3>=1.35",
 ]
 pipeline = [
