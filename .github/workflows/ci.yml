@@ -25,11 +25,13 @@ jobs:
           --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 3s --health-retries 30
     env:
       TEST_ADMIN_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
-      PII_KEY: ci0123456789abcdef0123456789abcd
-      API_JWT_SECRET: ci-jwt-secret-at-least-32-bytes-long-xx
-      EXPORT_SIGNING_KEY: ci-export-key
     steps:
       - uses: actions/checkout@v4
+      - name: Throwaway test keys
+        run: |
+          echo "PII_KEY=$(openssl rand -hex 16)" >> "$GITHUB_ENV"
+          echo "API_JWT_SECRET=$(openssl rand -hex 24)" >> "$GITHUB_ENV"
+          echo "EXPORT_SIGNING_KEY=$(openssl rand -hex 16)" >> "$GITHUB_ENV"
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true

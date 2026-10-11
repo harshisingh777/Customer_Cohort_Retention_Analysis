@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 os.environ.setdefault("API_JWT_SECRET", "schema-export")
+# Engines are created at import but never connect; any well-formed URL will do.
+os.environ.setdefault("API_DATABASE_URL", "postgresql://schema-export@localhost/schema-export")
 
 from apps.api.main import app  # noqa: E402
 
