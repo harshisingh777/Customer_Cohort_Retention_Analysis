@@ -10,6 +10,7 @@ import hashlib
 import hmac
 import io
 import time
+import uuid
 from collections import defaultdict, deque
 from collections.abc import AsyncIterator
 from typing import Annotated, Literal, cast
@@ -263,6 +264,14 @@ async def _csv_rows(view: str, params: dict, user: User) -> AsyncIterator[str]:
         )
 
 
+def _is_uuid(value: str) -> bool:
+    try:
+        uuid.UUID(value)
+    except ValueError:
+        return False
+    return True
+
+
 def _sign(export_id: str, expires: int) -> str:
     key = get_env().export_signing_key.encode()
     return hmac.new(key, f"{export_id}:{expires}".encode(), hashlib.sha256).hexdigest()
@@ -350,6 +359,9 @@ async def create_export(body: ExportRequest, user: CurrentUser):
 async def export_status(
     request: Request, user: CurrentUser, export_id: Annotated[str, Path(max_length=64)]
 ) -> ExportOut:
+    # Export ids are uuids; anything else can't exist, and would make Postgres reject the query.
+    if not _is_uuid(export_id):
+        raise not_found("This export")
     async with db.ro.connect() as conn:
         e = (await conn.execute(select(exports_t).where(exports_t.c.id == export_id))).first()
     if e is None or (e.owner != user.email and not user.is_admin):
@@ -399,6 +411,8 @@ async def export_file(
             "Link expired",
             "This download link has expired. Open the export again.",
         )
+    if not _is_uuid(export_id):
+        raise not_found("This export file")
     async with db.ro.connect() as conn:
         f = (
             await conn.execute(

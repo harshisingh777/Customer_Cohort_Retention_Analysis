@@ -230,6 +230,11 @@ async def test_csv_export_streams_with_filters(client):
     assert r.status_code == 403
 
 
+async def test_malformed_export_id_is_not_found(client):
+    r = await client.get("/v1/exports/" + "0" * 63, headers=VIEWER())
+    assert r.status_code == 404
+
+
 async def test_manual_refresh_returns_the_existing_job(client):
     first = await client.post("/v1/pipeline/runs", headers=ADMIN())
     second = await client.post("/v1/pipeline/runs", headers=ADMIN())
