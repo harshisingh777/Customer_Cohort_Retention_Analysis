@@ -1,5 +1,5 @@
 # Next.js standalone server. Build context: apps/web.
-FROM node:22-bookworm-slim AS deps
+FROM node:25-bookworm-slim AS deps
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH NEXT_TELEMETRY_DISABLED=1
 RUN npm install -g pnpm@12.6.0
 WORKDIR /app
@@ -10,7 +10,7 @@ FROM deps AS build
 COPY . .
 RUN pnpm build
 
-FROM node:22-bookworm-slim AS runtime
+FROM node:25-bookworm-slim AS runtime
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 WORKDIR /app
 COPY --from=build --chown=node:node /app/.next/standalone ./
