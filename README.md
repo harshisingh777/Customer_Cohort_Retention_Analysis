@@ -135,6 +135,7 @@ environment only; gitleaks runs in pre-commit and CI. See `docs/adr/0011-auth-an
 
 ## More
 
+- `docs/demo.md`: a free online copy for presentations (Neon + Render), no Docker needed.
 - `docs/runbook.md`: environment variables, deployment, manual refresh, reading the Data page,
   rotating secrets, restoring the database, swapping a data source.
 - `docs/erd.md`: the `raw`, `analytics` and `ops` schemas.
