@@ -2225,7 +2225,7 @@ dev = [
     { name = "schemathesis", specifier = ">=3.38" },
     { name = "sqlfluff", specifier = ">=3.2" },
     { name = "sqlfluff-templater-dbt", specifier = ">=3.2" },
-    { name = "testcontainers", extras = ["postgres"], specifier = ">=4.8" },
+    { name = "testcontainers", extras = ["postgres"], specifier = ">=4.15.0" },
 ]
 pipeline = [
     { name = "alembic", specifier = ">=1.14" },
