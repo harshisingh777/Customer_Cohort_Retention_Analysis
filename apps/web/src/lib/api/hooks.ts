@@ -2,7 +2,7 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useApiContext } from "@/components/context";
-import { apiGet, TIMEOUT_MS } from "./fetcher";
+import { apiGet } from "./fetcher";
 import { apiKey } from "./keys";
 import type { Route, Routes } from "./types";
 
@@ -15,9 +15,7 @@ export function useApi<R extends Route>(path: R, query: Record<string, string | 
   return useQuery<Routes[R]>({
     queryKey: apiKey(version, path, query),
     queryFn: async ({ signal }) =>
-      apiGet(apiUrl, await getToken(), path, query, what, {
-        signal: AbortSignal.any([signal, AbortSignal.timeout(TIMEOUT_MS)]),
-      }) as Promise<Routes[R]>,
+      apiGet(apiUrl, await getToken(), path, query, what, { signal }) as Promise<Routes[R]>,
     placeholderData: keepPreviousData,
   });
 }
