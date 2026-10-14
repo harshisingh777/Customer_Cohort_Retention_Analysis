@@ -43,6 +43,9 @@ async def test_health(client):
     assert (await client.get("/healthz")).json() == {"status": "ok"}
     r = await client.get("/readyz")
     assert r.status_code == 200 and r.json()["status"] == "ready"
+    # Uptime monitors send HEAD.
+    assert (await client.head("/healthz")).status_code == 200
+    assert (await client.head("/readyz")).status_code == 200
 
 
 async def test_requires_a_token(client):

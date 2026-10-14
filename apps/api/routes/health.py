@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from sqlalchemy import text
 
 from apps.api.db import db
@@ -32,3 +32,14 @@ async def readyz() -> JSONResponse:
             "data_through": db.current.data_through.isoformat(),
         }
     )
+
+
+# Uptime monitors (UptimeRobot's free plan) send HEAD. Not in the schema: same answers, no body.
+@router.head("/healthz", include_in_schema=False)
+async def healthz_head() -> Response:
+    return Response()
+
+
+@router.head("/readyz", include_in_schema=False)
+async def readyz_head() -> Response:
+    return Response(status_code=(await readyz()).status_code)
