@@ -28,11 +28,17 @@ export async function problem(res: Response, what: string): Promise<ApiError> {
   return new ApiError(res.status, detail, requestId, type);
 }
 
-/** A sleeping API (free hosting) answers 502-504 or nothing until it has woken, which takes up
- * to a minute; GETs are retried until then. Each attempt still has its own TIMEOUT_MS. */
+/** A sleeping API (free hosting) holds requests, or its edge answers 429 or 502-504, until it has
+ * woken (up to a minute). Requests don't retry on their own: that burst is what an edge throttles.
+ * One shared health check per base URL (per server process or browser tab) waits for the API with
+ * growing gaps, and the waiting requests then try again. Only GETs come through here. */
 export const WAKE_MS = 90_000;
-const RETRY_STATUSES = new Set([502, 503, 504]);
-const RETRY_DELAY_MS = 3_000;
+const WAIT_STATUSES = new Set([429, 502, 503, 504]);
+const FIRST_GAP_MS = 2_000;
+const MAX_GAP_MS = 15_000;
+const PROBE_TIMEOUT_MS = 60_000;
+
+const waking = new Map<string, Promise<boolean>>();
 
 function wait(ms: number, signal?: AbortSignal | null): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -49,6 +55,46 @@ function wait(ms: number, signal?: AbortSignal | null): Promise<void> {
   });
 }
 
+function abortable<T>(p: Promise<T>, signal: AbortSignal | null): Promise<T> {
+  if (!signal) return p;
+  return Promise.race([p, wait(2 ** 31 - 1, signal).then(() => p)]);
+}
+
+function retryAfterMs(res: Response | null): number {
+  const v = res?.headers.get("retry-after");
+  if (!v) return 0;
+  const seconds = Number(v);
+  if (Number.isFinite(seconds)) return seconds * 1000;
+  const at = Date.parse(v);
+  return Number.isNaN(at) ? 0 : at - Date.now();
+}
+
+/** True once the API's /healthz answers; false if the deadline comes first. Joins a check already
+ * running for the same API. */
+function untilAwake(baseUrl: string, deadline: number, firstGapMs: number): Promise<boolean> {
+  const running = waking.get(baseUrl);
+  if (running) return running;
+  const check = (async () => {
+    let gap = Math.min(Math.max(firstGapMs, FIRST_GAP_MS), MAX_GAP_MS);
+    while (Date.now() + gap < deadline) {
+      await wait(gap);
+      let res: Response | null = null;
+      try {
+        // A long timeout: a waking API holds this one request rather than receiving many.
+        const timeout = Math.max(1, Math.min(PROBE_TIMEOUT_MS, deadline - Date.now()));
+        res = await fetch(`${baseUrl}/healthz`, { cache: "no-store", signal: AbortSignal.timeout(timeout) });
+        if (res.ok) return true;
+      } catch {
+        /* still asleep or unreachable */
+      }
+      gap = Math.min(Math.max(retryAfterMs(res), gap * 2), MAX_GAP_MS);
+    }
+    return false;
+  })().finally(() => waking.delete(baseUrl));
+  waking.set(baseUrl, check);
+  return check;
+}
+
 export async function apiGet<R extends Route | `/v1/customers/${string}`>(
   baseUrl: string,
   token: string,
@@ -60,7 +106,7 @@ export async function apiGet<R extends Route | `/v1/customers/${string}`>(
 ): Promise<R extends Route ? Routes[R] : unknown> {
   const deadline = Date.now() + wakeMs;
   const outer = init.signal ?? null;
-  for (;;) {
+  for (let attempt = 0; ; attempt++) {
     let res: Response | null = null;
     let failure: ApiError;
     try {
@@ -83,8 +129,9 @@ export async function apiGet<R extends Route | `/v1/customers/${string}`>(
           : `Couldn't load ${what}: the server can't be reached. Check your connection and retry.`,
       );
     }
-    const retryable = res === null || RETRY_STATUSES.has(res.status);
-    if (!retryable || Date.now() + RETRY_DELAY_MS >= deadline) throw failure;
-    await wait(RETRY_DELAY_MS, outer);
+    const waitable = res === null || WAIT_STATUSES.has(res.status);
+    if (!waitable || Date.now() >= deadline) throw failure;
+    const gap = Math.max(retryAfterMs(res), FIRST_GAP_MS * 2 ** attempt);
+    if (!(await abortable(untilAwake(baseUrl, deadline, gap), outer))) throw failure;
   }
 }
