@@ -1,5 +1,5 @@
 # Worker: ingest, dbt build/audit/publish, CLV fit, PDF export. Build context: repo root.
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.15-slim-bookworm AS base
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
